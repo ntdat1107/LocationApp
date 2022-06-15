@@ -1,20 +1,18 @@
-package com.example.locationapp.presentation;
+package com.example.locationapp.presentation.locationlist;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.locationapp.MyApplication;
-import com.example.locationapp.data.repository.LocationRepositoryImpl;
 import com.example.locationapp.data.sources.remote.Data;
 import com.example.locationapp.data.sources.remote.Location;
 import com.example.locationapp.data.sources.remote.Root;
 import com.example.locationapp.domain.repository.LocationRepository;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,11 +29,14 @@ public class LocationListViewModel extends AndroidViewModel {
     public LocationListViewModel(@NonNull Application application) {
         super(application);
         ((MyApplication) application).getLocationComponent().inject(this);
-        locationsLiveData = new MutableLiveData<>();
     }
 
     public MutableLiveData<Data> getLocationsLiveData() {
+        if (locationsLiveData == null) {
+            locationsLiveData = new MutableLiveData<>();
+        }
         return locationsLiveData;
+
     }
 
     public void fetchDataAPI() {
@@ -44,7 +45,6 @@ public class LocationListViewModel extends AndroidViewModel {
             @Override
             public void onResponse(Call<Root> call, Response<Root> response) {
                 if (response.isSuccessful()) {
-                    Log.i("test", response.body().getData().getLocations().get(0).getImage().toString());
                     locationsLiveData.setValue(response.body().getData());
                 } else {
                     locationsLiveData.postValue(null);
@@ -56,5 +56,18 @@ public class LocationListViewModel extends AndroidViewModel {
                 locationsLiveData.postValue(null);
             }
         });
+    }
+
+    public void expandedItemView(int pos) {
+        Data data = locationsLiveData.getValue();
+        if (data == null) {
+            Toast.makeText(getApplication(), "Position is invalid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        for (Location i: data.getLocations()) {
+            i.setExpanded(null);
+        }
+        data.getLocations().get(pos).setExpanded(true);
+        locationsLiveData.setValue(data);
     }
 }

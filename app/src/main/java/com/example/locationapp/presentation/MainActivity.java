@@ -11,9 +11,7 @@ import android.widget.Toast;
 import com.example.locationapp.R;
 import com.example.locationapp.data.sources.remote.Data;
 import com.example.locationapp.data.sources.remote.Location;
-import com.example.locationapp.di.LocationComponent;
-
-import java.util.List;
+import com.example.locationapp.presentation.locationlist.LocationListViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,8 +35,11 @@ public class MainActivity extends AppCompatActivity {
                     if (data.getLocations().size() == 0) {
                         Log.i("test", "no items");
                     } else {
-                        for (Location i : data.getLocations()) {
+                        for (Location i: data.getLocations()) {
                             Log.i("test", i.getName());
+                            if (i.getExpanded() != null) {
+                                Log.i("test", i.getName() + " " + i.getExpanded().toString());
+                            }
                         }
                     }
                 }

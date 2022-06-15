@@ -1,8 +1,6 @@
 package com.example.locationapp.di;
 
-import com.example.locationapp.data.sources.remote.LocationAPI;
-import com.example.locationapp.domain.repository.LocationRepository;
-import com.example.locationapp.presentation.LocationListViewModel;
+import com.example.locationapp.presentation.locationlist.LocationListViewModel;
 
 
 import javax.inject.Singleton;

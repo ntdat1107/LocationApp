@@ -6,6 +6,8 @@ public class Location {
     private String name;
     private String image;
 
+    private Boolean isExpanded;
+
     public Location(String id, String code, String name, String image) {
         this.id = id;
         this.code = code;
@@ -43,5 +45,13 @@ public class Location {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Boolean getExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(Boolean expanded) {
+        isExpanded = expanded;
     }
 }
