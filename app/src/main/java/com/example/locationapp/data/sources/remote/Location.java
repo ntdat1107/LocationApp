@@ -1,10 +1,10 @@
 package com.example.locationapp.data.sources.remote;
 
 public class Location {
-    public String id;
-    public String code;
-    public String name;
-    public String image;
+    private String id;
+    private String code;
+    private String name;
+    private String image;
 
     public Location(String id, String code, String name, String image) {
         this.id = id;
