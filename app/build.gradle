@@ -3,6 +3,10 @@ plugins {
 }
 
 android {
+    viewBinding {
+        enabled = true
+    }
+
     compileSdk 32
 
     defaultConfig {
@@ -21,6 +25,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -44,8 +49,7 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.42'
 
     // Glide
-    implementation 'com.github.bumptech.glide:glide:4.13.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.1'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
     // Navigation
     implementation "androidx.navigation:navigation-fragment:2.4.2"

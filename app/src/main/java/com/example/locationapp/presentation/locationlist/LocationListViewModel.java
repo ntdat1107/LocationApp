@@ -29,6 +29,7 @@ public class LocationListViewModel extends AndroidViewModel {
     public LocationListViewModel(@NonNull Application application) {
         super(application);
         ((MyApplication) application).getLocationComponent().inject(this);
+        fetchDataAPI();
     }
 
     public MutableLiveData<Data> getLocationsLiveData() {

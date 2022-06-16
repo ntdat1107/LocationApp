@@ -15,37 +15,11 @@ import com.example.locationapp.presentation.locationlist.LocationListViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
-    LocationListViewModel locationListViewModel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fetchData();
     }
 
-    private void fetchData() {
-        locationListViewModel = new ViewModelProvider(this).get(LocationListViewModel.class);
-        locationListViewModel.getLocationsLiveData().observe(this, new Observer<Data>() {
-            @Override
-            public void onChanged(Data data) {
-                if (data == null) {
-                    Toast.makeText(MainActivity.this, "NULL", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (data.getLocations().size() == 0) {
-                        Log.i("test", "no items");
-                    } else {
-                        for (Location i: data.getLocations()) {
-                            Log.i("test", i.getName());
-                            if (i.getExpanded() != null) {
-                                Log.i("test", i.getName() + " " + i.getExpanded().toString());
-                            }
-                        }
-                    }
-                }
-            }
-        });
 
-        locationListViewModel.fetchDataAPI();
-    }
 }
