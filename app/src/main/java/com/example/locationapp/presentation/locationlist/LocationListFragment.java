@@ -5,14 +5,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.example.locationapp.R;
+import com.example.locationapp.data.sources.remote.model.Location;
 import com.example.locationapp.databinding.FragmentLocationListBinding;
 
-public class LocationListFragment extends Fragment {
+public class LocationListFragment extends Fragment implements LocationListAdapter.OnItemClickListener {
     LocationListViewModel locationListViewModel;
     private FragmentLocationListBinding binding;
     private LocationListAdapter adapter;
@@ -35,11 +41,16 @@ public class LocationListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        adapter = new LocationListAdapter(locationListViewModel, requireContext());
-        binding.recyclerView.setAdapter(adapter);
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        setUpRecyclerView();
 
         fetchData();
+    }
+
+    private void setUpRecyclerView() {
+        adapter = new LocationListAdapter(locationListViewModel, requireContext());
+        adapter.setOnItemClickListener(this);
+        binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -49,5 +60,12 @@ public class LocationListFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onItemClick(Location location, View container) {
+        Bundle bundle = new Bundle();
+        bundle.putString("code", location.getId());
+        Navigation.findNavController(container).navigate(R.id.action_locationListFragment_to_locationDetailFragment, bundle);
     }
 }

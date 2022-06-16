@@ -2,6 +2,7 @@ package com.example.locationapp.presentation.locationlist;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,8 +13,14 @@ import com.example.locationapp.databinding.LocationItemBinding;
 import com.squareup.picasso.Picasso;
 
 public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapter.ViewHolder> {
-    private LocationListViewModel locationListViewModel;
-    private Context context;
+    private final LocationListViewModel locationListViewModel;
+    private final Context context;
+
+    private OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 
     public LocationListAdapter(LocationListViewModel locationListViewModel, Context context) {
         this.locationListViewModel = locationListViewModel;
@@ -43,7 +50,7 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private LocationItemBinding binding;
+        private final LocationItemBinding binding;
 
         public ViewHolder(LocationItemBinding binding) {
             super(binding.getRoot());
@@ -55,6 +62,13 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
             Picasso.with(context).load(location.getImage()).into(binding.imageViewDescription);
             binding.textViewDescription.setText(location.getName());
             binding.textViewTitle.setText(location.getName());
+
+            binding.cardView.setOnClickListener(v -> onItemClickListener.onItemClick(location, binding.cardView)
+            );
         }
+    }
+
+    interface OnItemClickListener {
+        void onItemClick(Location location, View container);
     }
 }

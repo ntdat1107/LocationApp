@@ -9,7 +9,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {AppModule.class})
+@Component(modules = {LocationModule.class})
 public interface LocationComponent {
     public void inject(LocationListViewModel locationListViewModel);
 

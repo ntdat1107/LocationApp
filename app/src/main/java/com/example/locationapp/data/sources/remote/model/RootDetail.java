@@ -3,7 +3,7 @@ package com.example.locationapp.data.sources.remote.model;
 public class RootDetail {
     private int error_code;
     private String error_message;
-    private LocationDetail locationDetail;
+    private DataDetail data;
 
     public int getError_code() {
         return error_code;
@@ -21,11 +21,11 @@ public class RootDetail {
         this.error_message = error_message;
     }
 
-    public LocationDetail getLocationDetail() {
-        return locationDetail;
+    public DataDetail getData() {
+        return data;
     }
 
-    public void setLocationDetail(LocationDetail locationDetail) {
-        this.locationDetail = locationDetail;
+    public void setData(DataDetail dataDetail) {
+        this.data = dataDetail;
     }
 }

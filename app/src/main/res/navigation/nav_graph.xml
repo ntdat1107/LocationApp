@@ -17,5 +17,9 @@
         android:id="@+id/locationDetailFragment"
         android:name="com.example.locationapp.presentation.locationdetail.LocationDetailFragment"
         android:label="fragment_location_detail"
-        tools:layout="@layout/fragment_location_detail" />
+        tools:layout="@layout/fragment_location_detail">
+<!--        <argument-->
+<!--            android:name="locationCode"-->
+<!--            app:argType="String" />-->
+    </fragment>
 </navigation>
