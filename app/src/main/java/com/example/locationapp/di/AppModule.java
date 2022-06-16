@@ -1,9 +1,9 @@
 package com.example.locationapp.di;
 
-import android.util.Log;
-
 import com.example.locationapp.data.repository.LocationRepositoryImpl;
 import com.example.locationapp.data.sources.remote.LocationAPI;
+import com.example.locationapp.domain.interactor.GetDetailLocationUseCase;
+import com.example.locationapp.domain.interactor.GetPreferLocationsUseCase;
 import com.example.locationapp.domain.repository.LocationRepository;
 
 import javax.inject.Singleton;
@@ -29,5 +29,17 @@ public class AppModule {
     @Singleton
     static LocationRepository provideLocationRepository(LocationAPI locationAPI) {
         return new LocationRepositoryImpl(locationAPI);
+    }
+
+    @Singleton
+    @Provides
+    static GetPreferLocationsUseCase provideGetPreferLocationsUseCase(LocationRepository locationRepository) {
+        return new GetPreferLocationsUseCase(locationRepository);
+    }
+
+    @Singleton
+    @Provides
+    static GetDetailLocationUseCase provideGetDetailLocationUseCase(LocationRepository locationRepository) {
+        return new GetDetailLocationUseCase(locationRepository);
     }
 }

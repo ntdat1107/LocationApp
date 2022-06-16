@@ -1,25 +1,22 @@
 package com.example.locationapp.presentation.locationlist;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.locationapp.data.sources.remote.Location;
+import com.example.locationapp.data.sources.remote.model.Location;
 import com.example.locationapp.databinding.LocationItemBinding;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapter.ViewHolder> {
-    private List<Location> locations;
+    private LocationListViewModel locationListViewModel;
     private Context context;
 
-    public LocationListAdapter(List<Location> locations, Context context) {
-        this.locations = locations;
+    public LocationListAdapter(LocationListViewModel locationListViewModel, Context context) {
+        this.locationListViewModel = locationListViewModel;
         this.context = context;
     }
 
@@ -31,18 +28,18 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Location location = locations.get(position);
-        Log.i("test", location.getImage());
-
-        Picasso.with(context).load(location.getImage()).into(holder.getBinding().imageViewAvatar);
-        Picasso.with(context).load(location.getImage()).into(holder.getBinding().imageViewDescription);
-        holder.getBinding().textViewDescription.setText(location.getName());
-        holder.getBinding().textViewTitle.setText(location.getName());
+        if (this.locationListViewModel.getLocationsLiveData().getValue() != null) {
+            Location location = this.locationListViewModel.getLocationsLiveData().getValue().getLocations().get(position);
+            holder.bind(location);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return this.locations.size();
+        if (this.locationListViewModel.getLocationsLiveData().getValue() == null) {
+            return 0;
+        }
+        return this.locationListViewModel.getLocationsLiveData().getValue().getLocations().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -53,12 +50,11 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
             this.binding = binding;
         }
 
-        public LocationItemBinding getBinding() {
-            return binding;
-        }
-
-        public void setBinding(LocationItemBinding binding) {
-            this.binding = binding;
+        public void bind(Location location) {
+            Picasso.with(context).load(location.getImage()).into(binding.imageViewAvatar);
+            Picasso.with(context).load(location.getImage()).into(binding.imageViewDescription);
+            binding.textViewDescription.setText(location.getName());
+            binding.textViewTitle.setText(location.getName());
         }
     }
 }

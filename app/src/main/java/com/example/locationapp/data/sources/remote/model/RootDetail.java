@@ -1,15 +1,9 @@
-package com.example.locationapp.data.sources.remote;
+package com.example.locationapp.data.sources.remote.model;
 
-public class Root {
+public class RootDetail {
     private int error_code;
     private String error_message;
-    private Data data;
-
-    public Root(int error_code, String error_message, Data data) {
-        this.error_code = error_code;
-        this.error_message = error_message;
-        this.data = data;
-    }
+    private LocationDetail locationDetail;
 
     public int getError_code() {
         return error_code;
@@ -27,11 +21,11 @@ public class Root {
         this.error_message = error_message;
     }
 
-    public Data getData() {
-        return data;
+    public LocationDetail getLocationDetail() {
+        return locationDetail;
     }
 
-    public void setData(Data data) {
-        this.data = data;
+    public void setLocationDetail(LocationDetail locationDetail) {
+        this.locationDetail = locationDetail;
     }
 }

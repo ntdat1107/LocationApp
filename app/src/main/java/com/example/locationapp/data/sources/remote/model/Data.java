@@ -1,4 +1,4 @@
-package com.example.locationapp.data.sources.remote;
+package com.example.locationapp.data.sources.remote.model;
 
 import java.util.List;
 
