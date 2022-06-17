@@ -2,6 +2,7 @@ package com.example.locationapp.presentation.locationlist;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -58,7 +60,22 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
         locationListViewModel.getLocationsLiveData().observe(requireActivity(), data -> {
             if (data != null) {
                 adapter.notifyDataSetChanged();
-                binding.loading.setVisibility(View.GONE);
+                binding.recyclerView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        locationListViewModel.getLoading().observe(requireActivity(), aBoolean -> {
+            if (aBoolean) {
+                binding.loading.setVisibility(View.VISIBLE);
+                binding.recyclerView.setVisibility(View.INVISIBLE);
+            } else {
+                binding.loading.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        locationListViewModel.getError_msg().observe(requireActivity(), s -> {
+            if (s != null) {
+                Log.i ("test", s);
             }
         });
     }

@@ -46,12 +46,6 @@ public class LocationDetailFragment extends Fragment {
 
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        locationViewModel.getLocationDetailMutableLiveData().setValue(null);
-    }
-
     private void setUpBackground() {
         binding.detail.setVisibility(View.INVISIBLE);
         binding.loading.setVisibility(View.VISIBLE);
@@ -59,25 +53,35 @@ public class LocationDetailFragment extends Fragment {
 
     private void getData(View view) {
         assert getArguments() != null;
-        locationViewModel.getLocationDetailMutableLiveData().observe(requireActivity(), new Observer<RootDetail>() {
-            @Override
-            public void onChanged(RootDetail rootDetail) {
-                if (rootDetail != null) {
-                    if (rootDetail.getError_code() != 0) {
-                        // Location not found
-                        Log.i("test", rootDetail.getError_message());
-                    } else {
-                        Log.i("test", String.valueOf(rootDetail.getError_code()));
-                        // Location found
-                        assert getArguments() != null;
-                        binding.loading.setVisibility(View.GONE);
-                        binding.detail.setVisibility(View.VISIBLE);
-                        Picasso.with(view.getContext()).load(getArguments().getString("image")).placeholder(R.drawable.img).into(binding.imageViewDescription);
-                        binding.textViewDescription.setText(rootDetail.getData().getLocation().getDescription());
-                        binding.tvTitle.setText(rootDetail.getData().getLocation().getName());
-
-                    }
+        locationViewModel.getLocationDetailMutableLiveData().observe(requireActivity(), rootDetail -> {
+            if (rootDetail != null) {
+                if (rootDetail.getError_code() == 0) {
+                    // Location found
+                    assert getArguments() != null;
+                    binding.detail.setVisibility(View.VISIBLE);
+                    Picasso.with(view.getContext()).load(getArguments().getString("image")).placeholder(R.drawable.img).into(binding.imageViewDescription);
+                    binding.textViewDescription.setText(rootDetail.getData().getLocation().getDescription());
+                    binding.tvTitle.setText(rootDetail.getData().getLocation().getName());
+                } else {
+                    binding.detail.setVisibility(View.GONE);
                 }
+            }
+        });
+
+        locationViewModel.getLoading().observe(requireActivity(), aBoolean -> {
+            if (aBoolean) {
+                binding.loading.setVisibility((View.VISIBLE));
+                binding.detail.setVisibility(View.INVISIBLE);
+            } else {
+                binding.loading.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        locationViewModel.getError_message().observe(requireActivity(), s -> {
+            if (s != null) {
+                Log.i("test", s);
+            } else {
+                // Hide error msg
             }
         });
 

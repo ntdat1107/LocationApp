@@ -12,7 +12,6 @@ import com.example.locationapp.data.sources.remote.model.Data;
 import com.example.locationapp.data.sources.remote.model.Location;
 import com.example.locationapp.data.sources.remote.model.Root;
 import com.example.locationapp.domain.interactor.GetPreferLocationsUseCase;
-import com.example.locationapp.domain.repository.LocationRepository;
 
 import javax.inject.Inject;
 
@@ -25,6 +24,24 @@ public class LocationListViewModel extends AndroidViewModel {
     GetPreferLocationsUseCase getPreferLocationsUseCase;
 
     private MutableLiveData<Data> locationsLiveData;
+
+    private MutableLiveData<Boolean> loading;
+
+    private MutableLiveData<String> error_msg;
+
+    public MutableLiveData<Boolean> getLoading() {
+        if (loading == null) {
+            loading = new MutableLiveData<>();
+        }
+        return loading;
+    }
+
+    public MutableLiveData<String> getError_msg() {
+        if (error_msg == null) {
+            error_msg = new MutableLiveData<>();
+        }
+        return error_msg;
+    }
 
     public LocationListViewModel(@NonNull Application application) {
         super(application);
@@ -41,20 +58,24 @@ public class LocationListViewModel extends AndroidViewModel {
     }
 
     public void fetchDataAPI() {
+        getLoading().postValue(true);
         Call<Root> call = getPreferLocationsUseCase.execute();
         call.enqueue(new Callback<Root>() {
             @Override
-            public void onResponse(Call<Root> call, Response<Root> response) {
+            public void onResponse(@NonNull Call<Root> call, @NonNull Response<Root> response) {
                 if (response.isSuccessful()) {
+                    assert response.body() != null;
                     locationsLiveData.setValue(response.body().getData());
                 } else {
-                    locationsLiveData.postValue(null);
+                    getError_msg().setValue(response.message());
                 }
+                loading.setValue(false);
             }
 
             @Override
-            public void onFailure(Call<Root> call, Throwable t) {
-                locationsLiveData.postValue(null);
+            public void onFailure(@NonNull Call<Root> call, @NonNull Throwable t) {
+                loading.setValue(false);
+                getError_msg().setValue(t.getMessage());
             }
         });
     }
@@ -65,7 +86,7 @@ public class LocationListViewModel extends AndroidViewModel {
             Toast.makeText(getApplication(), "Position is invalid", Toast.LENGTH_SHORT).show();
             return;
         }
-        for (Location i: data.getLocations()) {
+        for (Location i : data.getLocations()) {
             i.setExpanded(null);
         }
         data.getLocations().get(pos).setExpanded(true);

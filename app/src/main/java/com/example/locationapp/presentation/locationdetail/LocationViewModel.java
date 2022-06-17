@@ -25,6 +25,22 @@ public class LocationViewModel extends AndroidViewModel {
     LocationRepository locationRepository;
 
     private MutableLiveData<RootDetail> locationDetailMutableLiveData;
+    private MutableLiveData<Boolean> loading;
+    private MutableLiveData<String> error_message;
+
+    public MutableLiveData<Boolean> getLoading() {
+        if (loading == null) {
+            loading = new MutableLiveData<Boolean>();
+        }
+        return loading;
+    }
+
+    public MutableLiveData<String> getError_message() {
+        if (error_message == null) {
+            error_message = new MutableLiveData<String>();
+        }
+        return error_message;
+    }
 
     public MutableLiveData<RootDetail> getLocationDetailMutableLiveData() {
         if (locationDetailMutableLiveData == null) {
@@ -39,21 +55,30 @@ public class LocationViewModel extends AndroidViewModel {
     }
 
     public void fetchLocationData(String locationID) {
+        getLoading().postValue(true);
         Call<RootDetail> call = locationRepository.getLocationDetail(locationID);
 
         call.enqueue(new Callback<RootDetail>() {
             @Override
             public void onResponse(@NonNull Call<RootDetail> call, @NonNull Response<RootDetail> response) {
                 if (response.isSuccessful()) {
-                    locationDetailMutableLiveData.setValue(response.body());
+                    if (response.body() == null) {
+                        getError_message().setValue("Empty data");
+                    } else if (response.body().getError_code() != 0) {
+                        getError_message().setValue(response.body().getError_message());
+                    } else {
+                        locationDetailMutableLiveData.setValue(response.body());
+                    }
                 } else {
-                    locationDetailMutableLiveData.setValue(new RootDetail(200, "Location ID is invalid"));
+                    getError_message().setValue(response.message());
                 }
+                loading.setValue(false);
             }
 
             @Override
             public void onFailure(@NonNull Call<RootDetail> call, @NonNull Throwable t) {
-                locationDetailMutableLiveData.setValue(new RootDetail(200, "Location ID is invalid"));
+                getError_message().setValue(t.getMessage());
+                loading.setValue(false);
             }
         });
     }
