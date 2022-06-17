@@ -43,17 +43,17 @@ public class LocationViewModel extends AndroidViewModel {
 
         call.enqueue(new Callback<RootDetail>() {
             @Override
-            public void onResponse(Call<RootDetail> call, Response<RootDetail> response) {
+            public void onResponse(@NonNull Call<RootDetail> call, @NonNull Response<RootDetail> response) {
                 if (response.isSuccessful()) {
                     locationDetailMutableLiveData.setValue(response.body());
                 } else {
-                    locationDetailMutableLiveData.setValue(null);
+                    locationDetailMutableLiveData.setValue(new RootDetail(200, "Location ID is invalid"));
                 }
             }
 
             @Override
-            public void onFailure(Call<RootDetail> call, Throwable t) {
-
+            public void onFailure(@NonNull Call<RootDetail> call, @NonNull Throwable t) {
+                locationDetailMutableLiveData.setValue(new RootDetail(200, "Location ID is invalid"));
             }
         });
     }

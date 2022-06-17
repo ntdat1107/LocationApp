@@ -5,6 +5,11 @@ public class RootDetail {
     private String error_message;
     private DataDetail data;
 
+    public RootDetail(int error_code, String error_message) {
+        this.error_code = error_code;
+        this.error_message = error_message;
+    }
+
     public int getError_code() {
         return error_code;
     }

@@ -27,7 +27,7 @@
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/amsterdam"
+                android:src="@drawable/img"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="Amsterdam"
+                android:text="Loading..."
                 android:textColor="@color/MediumLightGrey"
                 android:textSize="22sp"
                 app:layout_constraintBottom_toBottomOf="@id/imageViewAvatar"

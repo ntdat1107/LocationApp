@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.locationapp.R;
 import com.example.locationapp.data.sources.remote.model.Location;
 import com.example.locationapp.databinding.LocationItemBinding;
 import com.squareup.picasso.Picasso;
@@ -58,8 +59,8 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         }
 
         public void bind(Location location) {
-            Picasso.with(context).load(location.getImage()).into(binding.imageViewAvatar);
-            Picasso.with(context).load(location.getImage()).into(binding.imageViewDescription);
+            Picasso.with(context).load(location.getImage()).placeholder(R.drawable.img).into(binding.imageViewAvatar);
+            Picasso.with(context).load(location.getImage()).placeholder(R.drawable.img).into(binding.imageViewDescription);
             binding.textViewDescription.setText(location.getName());
             binding.textViewTitle.setText(location.getName());
 

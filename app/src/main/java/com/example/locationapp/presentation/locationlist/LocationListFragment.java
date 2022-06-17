@@ -58,6 +58,7 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
         locationListViewModel.getLocationsLiveData().observe(requireActivity(), data -> {
             if (data != null) {
                 adapter.notifyDataSetChanged();
+                binding.loading.setVisibility(View.GONE);
             }
         });
     }
@@ -66,6 +67,7 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
     public void onItemClick(Location location, View container) {
         Bundle bundle = new Bundle();
         bundle.putString("code", location.getId());
+        bundle.putString("image", location.getImage());
         Navigation.findNavController(container).navigate(R.id.action_locationListFragment_to_locationDetailFragment, bundle);
     }
 }
