@@ -11,15 +11,28 @@
         tools:layout="@layout/fragment_location_list">
         <action
             android:id="@+id/action_locationListFragment_to_locationDetailFragment"
-            app:destination="@id/locationDetailFragment" />
+            app:destination="@id/locationDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/locationDetailFragment"
         android:name="com.example.locationapp.presentation.locationdetail.LocationDetailFragment"
         android:label="fragment_location_detail"
         tools:layout="@layout/fragment_location_detail">
-<!--        <argument-->
-<!--            android:name="locationCode"-->
-<!--            app:argType="String" />-->
+        <action
+            android:id="@+id/action_locationDetailFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.example.locationapp.presentation.mapdirection.MapsFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_maps" />
 </navigation>

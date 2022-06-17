@@ -64,8 +64,13 @@ public class LocationListViewModel extends AndroidViewModel {
             @Override
             public void onResponse(@NonNull Call<Root> call, @NonNull Response<Root> response) {
                 if (response.isSuccessful()) {
-                    assert response.body() != null;
-                    locationsLiveData.setValue(response.body().getData());
+                    if (response.body() == null) {
+                        getError_msg().setValue("Empty data");
+                    } else if (response.body().getError_code() != 0) {
+                        getError_msg().setValue(response.body().getError_message());
+                    } else {
+                        getLocationsLiveData().setValue(response.body().getData());
+                    }
                 } else {
                     getError_msg().setValue(response.message());
                 }

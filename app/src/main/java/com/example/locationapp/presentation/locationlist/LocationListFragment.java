@@ -15,15 +15,17 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.locationapp.R;
 import com.example.locationapp.data.sources.remote.model.Location;
 import com.example.locationapp.databinding.FragmentLocationListBinding;
 
-public class LocationListFragment extends Fragment implements LocationListAdapter.OnItemClickListener {
+public class LocationListFragment extends Fragment implements LocationListAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     LocationListViewModel locationListViewModel;
     private FragmentLocationListBinding binding;
     private LocationListAdapter adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,8 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
         // Inflate the layout for this fragment
         binding = FragmentLocationListBinding.inflate(inflater, container, false);
 
+        swipeRefreshLayout = binding.swipeRefreshLayout;
+
         locationListViewModel = new ViewModelProvider(requireActivity()).get(LocationListViewModel.class);
         return binding.getRoot();
     }
@@ -45,6 +49,7 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
         super.onViewCreated(view, savedInstanceState);
         setUpRecyclerView();
 
+        swipeRefreshLayout.setOnRefreshListener(this);
         fetchData();
     }
 
@@ -66,9 +71,10 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
 
         locationListViewModel.getLoading().observe(requireActivity(), aBoolean -> {
             if (aBoolean) {
+                Log.i("test", "loading");
                 binding.loading.setVisibility(View.VISIBLE);
-                binding.recyclerView.setVisibility(View.INVISIBLE);
             } else {
+                swipeRefreshLayout.setRefreshing(false);
                 binding.loading.setVisibility(View.INVISIBLE);
             }
         });
@@ -86,5 +92,10 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
         bundle.putString("code", location.getId());
         bundle.putString("image", location.getImage());
         Navigation.findNavController(container).navigate(R.id.action_locationListFragment_to_locationDetailFragment, bundle);
+    }
+
+    @Override
+    public void onRefresh() {
+        locationListViewModel.fetchDataAPI();
     }
 }

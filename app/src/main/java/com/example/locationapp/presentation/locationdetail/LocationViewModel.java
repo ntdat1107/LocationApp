@@ -56,6 +56,7 @@ public class LocationViewModel extends AndroidViewModel {
 
     public void fetchLocationData(String locationID) {
         getLoading().postValue(true);
+        getLocationDetailMutableLiveData().postValue(null);
         Call<RootDetail> call = locationRepository.getLocationDetail(locationID);
 
         call.enqueue(new Callback<RootDetail>() {
@@ -67,7 +68,7 @@ public class LocationViewModel extends AndroidViewModel {
                     } else if (response.body().getError_code() != 0) {
                         getError_message().setValue(response.body().getError_message());
                     } else {
-                        locationDetailMutableLiveData.setValue(response.body());
+                        getLocationDetailMutableLiveData().setValue(response.body());
                     }
                 } else {
                     getError_message().setValue(response.message());
