@@ -18,7 +18,7 @@ public class LocationModule {
 
     @Provides
     @Singleton
-    static LocationAPI provideAPI() {
+    public LocationAPI provideAPI() {
         return new Retrofit.Builder().baseUrl("https://run.mocky.io")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
@@ -27,19 +27,19 @@ public class LocationModule {
 
     @Provides
     @Singleton
-    static LocationRepository provideLocationRepository(LocationAPI locationAPI) {
+    public LocationRepository provideLocationRepository(LocationAPI locationAPI) {
         return new LocationRepositoryImpl(locationAPI);
     }
 
     @Singleton
     @Provides
-    static GetPreferLocationsUseCase provideGetPreferLocationsUseCase(LocationRepository locationRepository) {
+    public GetPreferLocationsUseCase provideGetPreferLocationsUseCase(LocationRepository locationRepository) {
         return new GetPreferLocationsUseCase(locationRepository);
     }
 
     @Singleton
     @Provides
-    static GetDetailLocationUseCase provideGetDetailLocationUseCase(LocationRepository locationRepository) {
+    public GetDetailLocationUseCase provideGetDetailLocationUseCase(LocationRepository locationRepository) {
         return new GetDetailLocationUseCase(locationRepository);
     }
 }

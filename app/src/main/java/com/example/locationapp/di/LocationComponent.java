@@ -1,7 +1,7 @@
 package com.example.locationapp.di;
 
-import com.example.locationapp.presentation.locationdetail.LocationViewModel;
-import com.example.locationapp.presentation.locationlist.LocationListViewModel;
+import com.example.locationapp.presentation.locationdetail.viewmodel.LocationViewModel;
+import com.example.locationapp.presentation.locationlist.viewmodel.LocationListViewModel;
 
 
 import javax.inject.Singleton;

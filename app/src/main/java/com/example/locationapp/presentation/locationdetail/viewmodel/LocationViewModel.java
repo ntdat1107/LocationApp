@@ -1,4 +1,4 @@
-package com.example.locationapp.presentation.locationdetail;
+package com.example.locationapp.presentation.locationdetail.viewmodel;
 
 import android.app.Application;
 import android.util.Log;
@@ -56,6 +56,7 @@ public class LocationViewModel extends AndroidViewModel {
 
     public void fetchLocationData(String locationID) {
         getLoading().postValue(true);
+        getError_message().postValue(null);
         getLocationDetailMutableLiveData().postValue(null);
         Call<RootDetail> call = locationRepository.getLocationDetail(locationID);
 
@@ -69,6 +70,7 @@ public class LocationViewModel extends AndroidViewModel {
                         getError_message().setValue(response.body().getError_message());
                     } else {
                         getLocationDetailMutableLiveData().setValue(response.body());
+                        getError_message().setValue(null);
                     }
                 } else {
                     getError_message().setValue(response.message());

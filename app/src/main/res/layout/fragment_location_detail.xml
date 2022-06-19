@@ -10,13 +10,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/DarkerGrey"
-        tools:context=".presentation.locationlist.LocationListFragment">
+        tools:context=".presentation.locationlist.ui.LocationListFragment">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="?attr/actionBarSize"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:textColor="@color/MediumDarkGrey"
+                android:textSize="26sp" />
+        </androidx.appcompat.widget.Toolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/detail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             tools:visibility="visible">
 
             <ImageView
@@ -63,6 +84,21 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewDescription" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/error_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Error"
+            android:textColor="@color/MediumDarkGrey"
+            android:textSize="32sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <ProgressBar
             android:id="@+id/loading"

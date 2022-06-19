@@ -1,4 +1,4 @@
-package com.example.locationapp.presentation.locationlist;
+package com.example.locationapp.presentation.locationlist.viewmodel;
 
 import android.app.Application;
 import android.widget.Toast;

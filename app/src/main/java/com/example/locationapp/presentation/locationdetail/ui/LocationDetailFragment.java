@@ -1,5 +1,6 @@
-package com.example.locationapp.presentation.locationdetail;
+package com.example.locationapp.presentation.locationdetail.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -16,7 +18,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.locationapp.R;
 import com.example.locationapp.data.sources.remote.model.LocationDetail;
 import com.example.locationapp.databinding.FragmentLocationDetailBinding;
+import com.example.locationapp.presentation.locationdetail.viewmodel.LocationViewModel;
 import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
 
 public class LocationDetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     LocationViewModel locationViewModel;
@@ -56,8 +61,15 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
     private void setUpBackground() {
         binding.detail.setVisibility(View.INVISIBLE);
         binding.loading.setVisibility(View.VISIBLE);
+        ((AppCompatActivity) requireActivity()).setSupportActionBar(binding.toolbar);
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        binding.toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
+        assert getArguments() != null;
+        Log.i("test", getArguments().getString("title", "LocationApp"));
+        binding.tvToolbar.setText(getArguments().getString("title", "LocationApp"));
     }
 
+    @SuppressLint("SetTextI18n")
     private void getData(View view) {
         locationViewModel.getLocationDetailMutableLiveData().observe(requireActivity(), rootDetail -> {
             if (rootDetail != null) {
@@ -86,9 +98,11 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
 
         locationViewModel.getError_message().observe(requireActivity(), s -> {
             if (s != null) {
-                Log.i("test", s);
+                binding.errorMsg.setVisibility(View.VISIBLE);
+                binding.errorMsg.setText(s + "\nSwipe to refresh!!!");
+                binding.detail.setVisibility(View.GONE);
             } else {
-                // Hide error msg
+                binding.errorMsg.setVisibility(View.GONE);
             }
         });
 
@@ -102,12 +116,12 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
         binding.tvTitle.setText(location.getName());
 
         binding.showMapBtn.setOnClickListener(
-                v -> {
-                    Bundle bundle = new Bundle();
-                    bundle.putDouble("Lat", location.getLat());
-                    bundle.putDouble("Lng", location.getLng());
-                    Navigation.findNavController(view).navigate(R.id.action_locationDetailFragment_to_mapsFragment, bundle);
-                }
+            v -> {
+                Bundle bundle = new Bundle();
+                bundle.putDouble("Lat", location.getLat());
+                bundle.putDouble("Lng", location.getLng());
+                Navigation.findNavController(view).navigate(R.id.action_locationDetailFragment_to_mapsFragment, bundle);
+            }
         );
     }
 

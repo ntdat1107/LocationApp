@@ -2,9 +2,9 @@ package com.example.locationapp;
 
 import android.app.Application;
 
-import com.example.locationapp.di.LocationModule;
 import com.example.locationapp.di.DaggerLocationComponent;
 import com.example.locationapp.di.LocationComponent;
+import com.example.locationapp.di.LocationModule;
 
 public class MyApplication extends Application {
     LocationComponent locationComponent;
@@ -13,7 +13,8 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         locationComponent = DaggerLocationComponent.builder()
-                .build();
+            .locationModule(new LocationModule())
+            .build();
     }
 
     public LocationComponent getLocationComponent() {

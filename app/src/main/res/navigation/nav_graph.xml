@@ -6,7 +6,7 @@
     app:startDestination="@id/locationListFragment">
     <fragment
         android:id="@+id/locationListFragment"
-        android:name="com.example.locationapp.presentation.locationlist.LocationListFragment"
+        android:name="com.example.locationapp.presentation.locationlist.ui.LocationListFragment"
         android:label="fragment_location_list"
         tools:layout="@layout/fragment_location_list">
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/locationDetailFragment"
-        android:name="com.example.locationapp.presentation.locationdetail.LocationDetailFragment"
+        android:name="com.example.locationapp.presentation.locationdetail.ui.LocationDetailFragment"
         android:label="fragment_location_detail"
         tools:layout="@layout/fragment_location_detail">
         <action
@@ -32,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.example.locationapp.presentation.mapdirection.MapsFragment"
+        android:name="com.example.locationapp.presentation.mapdirection.ui.MapsFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_maps" />
 </navigation>

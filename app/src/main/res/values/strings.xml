@@ -3,4 +3,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="get_direction">Get direction</string>
+    <string name="bicycling">Bicycling</string>
+    <string name="driving">Driving</string>
+    <string name="two_wheeler">Two-wheeler</string>
+    <string name="walking">Walking</string>
+    <string name="display_street_view">Display street view</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.locationapp.presentation.locationlist;
+package com.example.locationapp.presentation.locationlist.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.locationapp.R;
 import com.example.locationapp.data.sources.remote.model.Location;
 import com.example.locationapp.databinding.LocationItemBinding;
+import com.example.locationapp.presentation.locationlist.viewmodel.LocationListViewModel;
 import com.squareup.picasso.Picasso;
 
 public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapter.ViewHolder> {
