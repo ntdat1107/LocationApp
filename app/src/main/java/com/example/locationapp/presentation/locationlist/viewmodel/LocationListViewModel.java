@@ -6,6 +6,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.locationapp.MyApplication;
 import com.example.locationapp.data.sources.remote.model.Data;
@@ -19,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LocationListViewModel extends AndroidViewModel {
+public class LocationListViewModel extends ViewModel {
     @Inject
     GetPreferLocationsUseCase getPreferLocationsUseCase;
 
@@ -43,11 +44,6 @@ public class LocationListViewModel extends AndroidViewModel {
         return error_msg;
     }
 
-    public LocationListViewModel(@NonNull Application application) {
-        super(application);
-        ((MyApplication) application).getLocationComponent().inject(this);
-        fetchDataAPI();
-    }
 
     public MutableLiveData<Data> getLocationsLiveData() {
         if (locationsLiveData == null) {
@@ -88,7 +84,6 @@ public class LocationListViewModel extends AndroidViewModel {
     public void expandedItemView(int pos) {
         Data data = locationsLiveData.getValue();
         if (data == null) {
-            Toast.makeText(getApplication(), "Position is invalid", Toast.LENGTH_SHORT).show();
             return;
         }
         for (Location i : data.getLocations()) {

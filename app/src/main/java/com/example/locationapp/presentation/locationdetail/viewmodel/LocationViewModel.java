@@ -20,7 +20,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LocationViewModel extends AndroidViewModel {
+public class LocationViewModel extends ViewModel {
     @Inject
     LocationRepository locationRepository;
 
@@ -49,10 +49,6 @@ public class LocationViewModel extends AndroidViewModel {
         return locationDetailMutableLiveData;
     }
 
-    public LocationViewModel(@NonNull Application application) {
-        super(application);
-        ((MyApplication) application).getLocationComponent().inject(this);
-    }
 
     public void fetchLocationData(String locationID) {
         getLoading().postValue(true);

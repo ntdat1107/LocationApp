@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.locationapp.MyApplication;
 import com.example.locationapp.R;
 import com.example.locationapp.data.sources.remote.model.Location;
 import com.example.locationapp.databinding.FragmentLocationListBinding;
@@ -40,6 +41,7 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
         swipeRefreshLayout = binding.swipeRefreshLayout;
 
         locationListViewModel = new ViewModelProvider(requireActivity()).get(LocationListViewModel.class);
+        ((MyApplication)requireContext().getApplicationContext()).getLocationComponent().inject(locationListViewModel);
         return binding.getRoot();
     }
 

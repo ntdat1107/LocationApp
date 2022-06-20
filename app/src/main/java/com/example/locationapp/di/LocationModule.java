@@ -6,20 +6,37 @@ import com.example.locationapp.domain.interactor.GetDetailLocationUseCase;
 import com.example.locationapp.domain.interactor.GetPreferLocationsUseCase;
 import com.example.locationapp.domain.repository.LocationRepository;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+
 
 @Module
 public class LocationModule {
 
+    public final String BASE_URL = "https://run.mocky.io";
+
     @Provides
     @Singleton
-    public LocationAPI provideAPI() {
-        return new Retrofit.Builder().baseUrl("https://run.mocky.io")
+    public OkHttpClient provideClient() {
+        return new OkHttpClient.Builder().connectTimeout(1, TimeUnit.SECONDS)
+                .readTimeout(1, TimeUnit.SECONDS)
+                .writeTimeout(1, TimeUnit.SECONDS)
+                .build();
+    }
+
+    @Provides
+    @Singleton
+    public LocationAPI provideAPI(OkHttpClient client) {
+        return new Retrofit.Builder().baseUrl(BASE_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(LocationAPI.class);

@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.locationapp.MyApplication;
 import com.example.locationapp.R;
 import com.example.locationapp.data.sources.remote.model.LocationDetail;
 import com.example.locationapp.databinding.FragmentLocationDetailBinding;
@@ -45,6 +46,8 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
         setUpBackground();
 
         locationViewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
+        ((MyApplication) requireContext().getApplicationContext()).getLocationComponent().inject(locationViewModel);
+
         return binding.getRoot();
     }
 
