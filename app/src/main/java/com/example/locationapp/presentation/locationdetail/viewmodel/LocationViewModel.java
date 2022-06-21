@@ -1,57 +1,51 @@
 package com.example.locationapp.presentation.locationdetail.viewmodel;
 
-import android.app.Application;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.locationapp.MyApplication;
-import com.example.locationapp.data.sources.remote.model.LocationDetail;
-import com.example.locationapp.data.sources.remote.model.Root;
 import com.example.locationapp.data.sources.remote.model.RootDetail;
-import com.example.locationapp.domain.repository.LocationRepository;
+import com.example.locationapp.data.repository.LocationRepository;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LocationViewModel extends AndroidViewModel {
-    @Inject
-    LocationRepository locationRepository;
+@HiltViewModel
+public class LocationViewModel extends ViewModel {
 
+    public final LocationRepository locationRepository;
     private MutableLiveData<RootDetail> locationDetailMutableLiveData;
     private MutableLiveData<Boolean> loading;
     private MutableLiveData<String> error_message;
 
     public MutableLiveData<Boolean> getLoading() {
         if (loading == null) {
-            loading = new MutableLiveData<Boolean>();
+            loading = new MutableLiveData<>();
         }
         return loading;
     }
 
     public MutableLiveData<String> getError_message() {
         if (error_message == null) {
-            error_message = new MutableLiveData<String>();
+            error_message = new MutableLiveData<>();
         }
         return error_message;
     }
 
     public MutableLiveData<RootDetail> getLocationDetailMutableLiveData() {
         if (locationDetailMutableLiveData == null) {
-            locationDetailMutableLiveData = new MutableLiveData<RootDetail>();
+            locationDetailMutableLiveData = new MutableLiveData<>();
         }
         return locationDetailMutableLiveData;
     }
 
-    public LocationViewModel(@NonNull Application application) {
-        super(application);
-        ((MyApplication) application).getLocationComponent().inject(this);
+    @Inject
+    public LocationViewModel(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
     }
 
     public void fetchLocationData(String locationID) {

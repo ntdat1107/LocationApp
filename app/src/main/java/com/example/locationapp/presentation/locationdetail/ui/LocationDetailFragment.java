@@ -23,6 +23,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class LocationDetailFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     LocationViewModel locationViewModel;
     private FragmentLocationDetailBinding binding;
@@ -32,6 +35,7 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        assert getArguments() != null;
         locationApiCode = getArguments().getString("code");
     }
 
@@ -43,8 +47,10 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
         swipeRefreshLayout = binding.swipeRefreshLayout;
 
         setUpBackground();
+        locationViewModel = new ViewModelProvider(this).get(LocationViewModel.class);
+        Log.i("test", locationViewModel.locationRepository.toString());
+        Log.i("test", locationViewModel.toString());
 
-        locationViewModel = new ViewModelProvider(requireActivity()).get(LocationViewModel.class);
         return binding.getRoot();
     }
 
@@ -65,7 +71,6 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
         Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         binding.toolbar.setNavigationOnClickListener(v -> requireActivity().onBackPressed());
         assert getArguments() != null;
-        Log.i("test", getArguments().getString("title", "LocationApp"));
         binding.tvToolbar.setText(getArguments().getString("title", "LocationApp"));
     }
 
@@ -85,7 +90,6 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
 
         locationViewModel.getLoading().observe(requireActivity(), aBoolean -> {
             if (aBoolean) {
-                Log.i("test", "loading");
                 binding.loading.setVisibility((View.VISIBLE));
                 if (!swipeRefreshLayout.isRefreshing()) {
                     binding.detail.setVisibility(View.INVISIBLE);

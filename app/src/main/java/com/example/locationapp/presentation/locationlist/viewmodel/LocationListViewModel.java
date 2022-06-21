@@ -1,27 +1,23 @@
 package com.example.locationapp.presentation.locationlist.viewmodel;
 
-import android.app.Application;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-import com.example.locationapp.MyApplication;
 import com.example.locationapp.data.sources.remote.model.Data;
-import com.example.locationapp.data.sources.remote.model.Location;
 import com.example.locationapp.data.sources.remote.model.Root;
-import com.example.locationapp.domain.interactor.GetPreferLocationsUseCase;
+import com.example.locationapp.data.repository.LocationRepository;
 
 import javax.inject.Inject;
 
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LocationListViewModel extends AndroidViewModel {
-    @Inject
-    GetPreferLocationsUseCase getPreferLocationsUseCase;
+@HiltViewModel
+public class LocationListViewModel extends ViewModel {
+    public final LocationRepository locationRepository;
 
     private MutableLiveData<Data> locationsLiveData;
 
@@ -43,10 +39,9 @@ public class LocationListViewModel extends AndroidViewModel {
         return error_msg;
     }
 
-    public LocationListViewModel(@NonNull Application application) {
-        super(application);
-        ((MyApplication) application).getLocationComponent().inject(this);
-        fetchDataAPI();
+    @Inject
+    public LocationListViewModel(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
     }
 
     public MutableLiveData<Data> getLocationsLiveData() {
@@ -59,7 +54,7 @@ public class LocationListViewModel extends AndroidViewModel {
 
     public void fetchDataAPI() {
         getLoading().postValue(true);
-        Call<Root> call = getPreferLocationsUseCase.execute();
+        Call<Root> call = locationRepository.getAllLocation();
         call.enqueue(new Callback<Root>() {
             @Override
             public void onResponse(@NonNull Call<Root> call, @NonNull Response<Root> response) {
@@ -83,18 +78,5 @@ public class LocationListViewModel extends AndroidViewModel {
                 getError_msg().setValue(t.getMessage());
             }
         });
-    }
-
-    public void expandedItemView(int pos) {
-        Data data = locationsLiveData.getValue();
-        if (data == null) {
-            Toast.makeText(getApplication(), "Position is invalid", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        for (Location i : data.getLocations()) {
-            i.setExpanded(null);
-        }
-        data.getLocations().get(pos).setExpanded(true);
-        locationsLiveData.setValue(data);
     }
 }

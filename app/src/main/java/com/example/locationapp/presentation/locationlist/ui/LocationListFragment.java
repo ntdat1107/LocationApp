@@ -20,7 +20,11 @@ import com.example.locationapp.data.sources.remote.model.Location;
 import com.example.locationapp.databinding.FragmentLocationListBinding;
 import com.example.locationapp.presentation.locationlist.viewmodel.LocationListViewModel;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class LocationListFragment extends Fragment implements LocationListAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+
     LocationListViewModel locationListViewModel;
     private FragmentLocationListBinding binding;
     private LocationListAdapter adapter;
@@ -39,7 +43,7 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
 
         swipeRefreshLayout = binding.swipeRefreshLayout;
 
-        locationListViewModel = new ViewModelProvider(requireActivity()).get(LocationListViewModel.class);
+        locationListViewModel = new ViewModelProvider(this).get(LocationListViewModel.class);
         return binding.getRoot();
     }
 
@@ -70,7 +74,6 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
 
         locationListViewModel.getLoading().observe(requireActivity(), aBoolean -> {
             if (aBoolean) {
-                Log.i("test", "loading");
                 binding.loading.setVisibility(View.VISIBLE);
             } else {
                 swipeRefreshLayout.setRefreshing(false);
@@ -107,5 +110,7 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
     public void onResume() {
         super.onResume();
         locationListViewModel.fetchDataAPI();
+        Log.i("test", locationListViewModel.toString());
+        Log.i("test", locationListViewModel.locationRepository.toString());
     }
 }

@@ -3,6 +3,8 @@ package com.example.locationapp.data.sources.remote;
 import com.example.locationapp.data.sources.remote.model.Root;
 import com.example.locationapp.data.sources.remote.model.RootDetail;
 
+import javax.inject.Singleton;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

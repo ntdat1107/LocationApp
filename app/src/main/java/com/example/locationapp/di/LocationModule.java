@@ -1,19 +1,22 @@
 package com.example.locationapp.di;
 
+import com.example.locationapp.data.repository.LocationRepository;
 import com.example.locationapp.data.repository.LocationRepositoryImpl;
 import com.example.locationapp.data.sources.remote.LocationAPI;
-import com.example.locationapp.domain.interactor.GetDetailLocationUseCase;
-import com.example.locationapp.domain.interactor.GetPreferLocationsUseCase;
-import com.example.locationapp.domain.repository.LocationRepository;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.hilt.InstallIn;
+import dagger.hilt.android.components.ViewModelComponent;
+import dagger.hilt.android.scopes.ViewModelScoped;
+import dagger.hilt.components.SingletonComponent;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
+@InstallIn(SingletonComponent.class)
 public class LocationModule {
 
     @Provides
@@ -29,17 +32,5 @@ public class LocationModule {
     @Singleton
     public LocationRepository provideLocationRepository(LocationAPI locationAPI) {
         return new LocationRepositoryImpl(locationAPI);
-    }
-
-    @Singleton
-    @Provides
-    public GetPreferLocationsUseCase provideGetPreferLocationsUseCase(LocationRepository locationRepository) {
-        return new GetPreferLocationsUseCase(locationRepository);
-    }
-
-    @Singleton
-    @Provides
-    public GetDetailLocationUseCase provideGetDetailLocationUseCase(LocationRepository locationRepository) {
-        return new GetDetailLocationUseCase(locationRepository);
     }
 }
