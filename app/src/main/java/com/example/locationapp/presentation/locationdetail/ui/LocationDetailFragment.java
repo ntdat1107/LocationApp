@@ -16,7 +16,7 @@ import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.locationapp.R;
-import com.example.locationapp.data.sources.remote.model.LocationDetail;
+import com.example.locationapp.data.sources.remote.model.detaillocation.LocationDetail;
 import com.example.locationapp.databinding.FragmentLocationDetailBinding;
 import com.example.locationapp.presentation.locationdetail.viewmodel.LocationViewModel;
 import com.squareup.picasso.Picasso;

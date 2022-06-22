@@ -1,9 +1,7 @@
 package com.example.locationapp.data.sources.remote;
 
-import com.example.locationapp.data.sources.remote.model.Root;
-import com.example.locationapp.data.sources.remote.model.RootDetail;
-
-import javax.inject.Singleton;
+import com.example.locationapp.data.sources.remote.model.preferlocation.Root;
+import com.example.locationapp.data.sources.remote.model.detaillocation.RootDetail;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

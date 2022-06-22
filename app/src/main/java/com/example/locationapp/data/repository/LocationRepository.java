@@ -1,14 +1,13 @@
 package com.example.locationapp.data.repository;
 
-import com.example.locationapp.data.sources.remote.model.Root;
-import com.example.locationapp.data.sources.remote.model.RootDetail;
+import androidx.lifecycle.MutableLiveData;
 
-import javax.inject.Singleton;
-
-import retrofit2.Call;
+import com.example.locationapp.data.sources.remote.model.preferlocation.Root;
+import com.example.locationapp.data.sources.remote.model.detaillocation.RootDetail;
+import com.example.locationapp.utils.Resource;
 
 public interface LocationRepository {
-    Call<Root> getAllLocation();
+    MutableLiveData<Resource<Root>> getAllLocation();
 
-    Call<RootDetail> getLocationDetail(String locationID);
+    MutableLiveData<Resource<RootDetail>> getLocationDetail(String locationID);
 }

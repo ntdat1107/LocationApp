@@ -1,7 +1,12 @@
-package com.example.locationapp.data.sources.remote.model;
+package com.example.locationapp.data.sources.remote.model.preferlocation;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Root {
+    @SerializedName("error_code")
     private int error_code;
+    @SerializedName("error_message")
     private String error_message;
     private Data data;
 

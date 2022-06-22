@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.locationapp.R;
-import com.example.locationapp.data.sources.remote.model.Location;
+import com.example.locationapp.data.sources.remote.model.preferlocation.Location;
 import com.example.locationapp.databinding.FragmentLocationListBinding;
 import com.example.locationapp.presentation.locationlist.viewmodel.LocationListViewModel;
 
@@ -81,7 +81,7 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
             }
         });
 
-        locationListViewModel.getError_msg().observe(requireActivity(), s -> {
+        locationListViewModel.getError_message().observe(requireActivity(), s -> {
             if (s != null) {
                 binding.errorMsg.setVisibility(View.VISIBLE);
                 binding.errorMsg.setText(s + "\nSwipe to refresh!!");

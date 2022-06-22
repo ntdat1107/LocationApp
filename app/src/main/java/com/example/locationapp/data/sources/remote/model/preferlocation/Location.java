@@ -1,4 +1,4 @@
-package com.example.locationapp.data.sources.remote.model;
+package com.example.locationapp.data.sources.remote.model.preferlocation;
 
 public class Location {
     private String id;
@@ -6,7 +6,6 @@ public class Location {
     private String name;
     private String image;
 
-    private Boolean isExpanded;
 
     public Location(String id, String code, String name, String image) {
         this.id = id;
@@ -45,13 +44,5 @@ public class Location {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public Boolean getExpanded() {
-        return isExpanded;
-    }
-
-    public void setExpanded(Boolean expanded) {
-        isExpanded = expanded;
     }
 }

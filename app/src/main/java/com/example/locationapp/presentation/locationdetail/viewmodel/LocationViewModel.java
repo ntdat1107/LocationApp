@@ -1,18 +1,18 @@
 package com.example.locationapp.presentation.locationdetail.viewmodel;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.locationapp.data.sources.remote.model.RootDetail;
+import com.example.locationapp.data.sources.remote.model.detaillocation.RootDetail;
 import com.example.locationapp.data.repository.LocationRepository;
+import com.example.locationapp.data.sources.remote.model.preferlocation.Root;
+import com.example.locationapp.utils.Resource;
+import com.example.locationapp.utils.Status;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 @HiltViewModel
 public class LocationViewModel extends ViewModel {
@@ -52,32 +52,54 @@ public class LocationViewModel extends ViewModel {
         getLoading().postValue(true);
         getError_message().postValue(null);
         getLocationDetailMutableLiveData().postValue(null);
-        Call<RootDetail> call = locationRepository.getLocationDetail(locationID);
 
-        call.enqueue(new Callback<RootDetail>() {
+        MutableLiveData<Resource<RootDetail>> response = locationRepository.getLocationDetail(locationID);
+
+        response.observeForever(new Observer<Resource<RootDetail>>() {
             @Override
-            public void onResponse(@NonNull Call<RootDetail> call, @NonNull Response<RootDetail> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() == null) {
+            public void onChanged(Resource<RootDetail> rootResource) {
+                if (rootResource.getStatus() == Status.SUCCESS) {
+                    getLoading().setValue(false);
+                    if (rootResource.getData() == null) {
                         getError_message().setValue("Empty data");
-                    } else if (response.body().getError_code() != 0) {
-                        getError_message().setValue(response.body().getError_message());
+                    } else if (rootResource.getData().getError_code() != 0) {
+                        getError_message().setValue(rootResource.getData().getError_message());
                     } else {
-                        getLocationDetailMutableLiveData().setValue(response.body());
-                        getError_message().setValue(null);
+                        getLocationDetailMutableLiveData().setValue(rootResource.getData());
                     }
-                } else {
-                    getError_message().setValue(response.message());
+                } else if (rootResource.getStatus() == Status.ERROR) {
+                    getLoading().setValue(false);
+                    getError_message().setValue(rootResource.getError().getMessage());
                 }
-                loading.setValue(false);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<RootDetail> call, @NonNull Throwable t) {
-                getError_message().setValue(t.getMessage());
-                loading.setValue(false);
             }
         });
+
+
+
+//        call.enqueue(new Callback<RootDetail>() {
+//            @Override
+//            public void onResponse(@NonNull Call<RootDetail> call, @NonNull Response<RootDetail> response) {
+//                if (response.isSuccessful()) {
+//                    if (response.body() == null) {
+//                        getError_message().setValue("Empty data");
+//                    } else if (response.body().getError_code() != 0) {
+//                        getError_message().setValue(response.body().getError_message());
+//                    } else {
+//                        getLocationDetailMutableLiveData().setValue(response.body());
+//                        getError_message().setValue(null);
+//                    }
+//                } else {
+//                    getError_message().setValue(response.message());
+//                }
+//                loading.setValue(false);
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<RootDetail> call, @NonNull Throwable t) {
+//                getError_message().setValue(t.getMessage());
+//                loading.setValue(false);
+//            }
+//        });
     }
 
 }

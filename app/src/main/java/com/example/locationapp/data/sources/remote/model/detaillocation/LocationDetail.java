@@ -1,4 +1,4 @@
-package com.example.locationapp.data.sources.remote.model;
+package com.example.locationapp.data.sources.remote.model.detaillocation;
 
 public class LocationDetail {
     private String code;

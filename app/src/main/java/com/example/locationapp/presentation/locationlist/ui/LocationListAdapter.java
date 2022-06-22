@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.locationapp.R;
-import com.example.locationapp.data.sources.remote.model.Location;
+import com.example.locationapp.data.sources.remote.model.preferlocation.Location;
 import com.example.locationapp.databinding.LocationItemBinding;
 import com.example.locationapp.presentation.locationlist.viewmodel.LocationListViewModel;
 import com.squareup.picasso.Picasso;

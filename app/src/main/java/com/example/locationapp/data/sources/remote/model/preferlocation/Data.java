@@ -1,4 +1,4 @@
-package com.example.locationapp.data.sources.remote.model;
+package com.example.locationapp.data.sources.remote.model.preferlocation;
 
 import java.util.List;
 

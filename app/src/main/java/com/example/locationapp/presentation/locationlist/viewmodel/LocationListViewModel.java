@@ -1,19 +1,21 @@
 package com.example.locationapp.presentation.locationlist.viewmodel;
 
-import androidx.annotation.NonNull;
+import androidx.arch.core.util.Function;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import com.example.locationapp.data.sources.remote.model.Data;
-import com.example.locationapp.data.sources.remote.model.Root;
 import com.example.locationapp.data.repository.LocationRepository;
+import com.example.locationapp.data.sources.remote.model.preferlocation.Data;
+import com.example.locationapp.data.sources.remote.model.preferlocation.Root;
+import com.example.locationapp.utils.Resource;
+import com.example.locationapp.utils.Status;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 @HiltViewModel
 public class LocationListViewModel extends ViewModel {
@@ -23,7 +25,7 @@ public class LocationListViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> loading;
 
-    private MutableLiveData<String> error_msg;
+    private MutableLiveData<String> error_message;
 
     public MutableLiveData<Boolean> getLoading() {
         if (loading == null) {
@@ -32,11 +34,11 @@ public class LocationListViewModel extends ViewModel {
         return loading;
     }
 
-    public MutableLiveData<String> getError_msg() {
-        if (error_msg == null) {
-            error_msg = new MutableLiveData<>();
+    public MutableLiveData<String> getError_message() {
+        if (error_message == null) {
+            error_message = new MutableLiveData<>();
         }
-        return error_msg;
+        return error_message;
     }
 
     @Inject
@@ -46,7 +48,7 @@ public class LocationListViewModel extends ViewModel {
 
     public MutableLiveData<Data> getLocationsLiveData() {
         if (locationsLiveData == null) {
-            locationsLiveData = new MutableLiveData<>();
+            locationsLiveData = new MutableLiveData<Data>();
         }
         return locationsLiveData;
 
@@ -54,29 +56,50 @@ public class LocationListViewModel extends ViewModel {
 
     public void fetchDataAPI() {
         getLoading().postValue(true);
-        Call<Root> call = locationRepository.getAllLocation();
-        call.enqueue(new Callback<Root>() {
-            @Override
-            public void onResponse(@NonNull Call<Root> call, @NonNull Response<Root> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() == null) {
-                        getError_msg().setValue("Empty data");
-                    } else if (response.body().getError_code() != 0) {
-                        getError_msg().setValue(response.body().getError_message());
-                    } else {
-                        getLocationsLiveData().setValue(response.body().getData());
-                    }
-                } else {
-                    getError_msg().setValue(response.message());
-                }
-                loading.setValue(false);
-            }
+        getError_message().postValue(null);
+        getLocationsLiveData().postValue(null);
 
+        MutableLiveData<Resource<Root>> response = locationRepository.getAllLocation();
+
+        response.observeForever(new Observer<Resource<Root>>() {
             @Override
-            public void onFailure(@NonNull Call<Root> call, @NonNull Throwable t) {
-                loading.setValue(false);
-                getError_msg().setValue(t.getMessage());
+            public void onChanged(Resource<Root> rootResource) {
+                if (rootResource.getStatus() == Status.SUCCESS) {
+                    getLoading().setValue(false);
+                    if (rootResource.getData() == null) {
+                        getError_message().setValue("Empty data");
+                    } else if (rootResource.getData().getError_code() != 0) {
+                        getError_message().setValue(rootResource.getData().getError_message());
+                    } else {
+                        getLocationsLiveData().setValue(rootResource.getData().getData());
+                    }
+                } else if (rootResource.getStatus() == Status.ERROR) {
+                    getLoading().setValue(false);
+                    getError_message().setValue(rootResource.getError().getMessage());
+                }
             }
         });
+
+//        private MutableLiveData<String> processInput = new MutableLiveData<>();
+//        public final LiveData<String> formatJson = Transformations
+//                .switchMap(Transformations.distinctUntilChanged(processInput),
+//                        new Function<String, LiveData<String>>() {
+//                            @Override
+//                            public LiveData<String> apply(String input) {
+//                                return Transformations.map(repo.getJson(input), output -> {
+//                                    if(output.getStatus() != Status.SUCCESS) {
+//                                        return context.getString(R.string.process_user_comments) ;
+//                                    } else {
+//                                        return output.getData();
+//                                    }
+//                                });
+//                            }
+//                        });
+//
+//
+//        public void requestJsonFromInput(String input) {
+//            processInput.setValue(input);
+//        }
+
     }
 }
