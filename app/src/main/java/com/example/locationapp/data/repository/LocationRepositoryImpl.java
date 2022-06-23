@@ -1,5 +1,7 @@
 package com.example.locationapp.data.repository;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -18,13 +20,15 @@ public class LocationRepositoryImpl implements LocationRepository {
 
     private final LocationAPI mLocationAPI;
 
-    private final MutableLiveData<Resource<Root>> preferLocation = new MutableLiveData<>();
+    private final MutableLiveData<Resource<Root>> preferLocation;
 
-    private final MutableLiveData<Resource<RootDetail>> detailLocation = new MutableLiveData<>();
+    private final MutableLiveData<Resource<RootDetail>> detailLocation;
 
     @Inject
     public LocationRepositoryImpl(LocationAPI mLocationAPI) {
         this.mLocationAPI = mLocationAPI;
+        preferLocation = new MutableLiveData<>();
+        detailLocation = new MutableLiveData<>();
     }
 
     @Override
@@ -34,15 +38,21 @@ public class LocationRepositoryImpl implements LocationRepository {
         } else {
             preferLocation.setValue(new Resource.Initial<>());
         }
-        Call<Root> call = mLocationAPI.fetchAllLocation();
-        call.enqueue(new Callback<Root>() {
+
+        mLocationAPI.fetchAllLocation().enqueue(new Callback<Root>() {
             @Override
             public void onResponse(@NonNull Call<Root> call, @NonNull Response<Root> response) {
-                preferLocation.setValue(new Resource.Success<>(response.body()));
+                if (response.body() == null) {
+                    preferLocation.setValue(new Resource.Error<>(new Root(999, "Empty data", null), null));
+                } else if (response.body().getError_code() != 0) {
+                    preferLocation.setValue(new Resource.Error<>(response.body(), null));
+                } else {
+                    preferLocation.setValue(new Resource.Success<>(response.body()));
+                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<Root> call, @NonNull Throwable t) {
+            public void onFailure(Call<Root> call, Throwable t) {
                 preferLocation.setValue(new Resource.Error<>(new Root(999, t.getMessage(), null), t));
             }
         });
@@ -62,11 +72,17 @@ public class LocationRepositoryImpl implements LocationRepository {
         call.enqueue(new Callback<RootDetail>() {
             @Override
             public void onResponse(@NonNull Call<RootDetail> call, @NonNull Response<RootDetail> response) {
-                detailLocation.setValue(new Resource.Success<>(response.body()));
+                if (response.body() == null) {
+                    detailLocation.setValue(new Resource.Error<>(new RootDetail(999, "Empty Data", null), null));
+                } else if (response.body().getError_code() != 0) {
+                    detailLocation.setValue(new Resource.Error<>(response.body(), null));
+                } else {
+                    detailLocation.setValue(new Resource.Success<>(response.body()));
+                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<RootDetail> call, @NonNull Throwable t) {
+            public void onFailure(Call<RootDetail> call, Throwable t) {
                 detailLocation.setValue(new Resource.Error<>(new RootDetail(999, t.getMessage(), null), t));
             }
         });

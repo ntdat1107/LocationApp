@@ -1,5 +1,9 @@
 package com.example.locationapp.data.sources.remote.model.preferlocation;
 
+import androidx.annotation.NonNull;
+
+import java.util.Objects;
+
 public class Location {
     private String id;
     private String code;
@@ -44,5 +48,29 @@ public class Location {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Location location = (Location) o;
+        return id.equals(location.id) && code.equals(location.code) && name.equals(location.name) && image.equals(location.image);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, code, name, image);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "{\n" +
+                "\"id\": \"" + this.id + "\",\n" +
+                "\"code\": \"" + this.code + "\",\n" +
+                "\"name\": \"" + this.name + "\",\n" +
+                "\"image\": \"" + this.image + "\"\n" +
+                "}";
     }
 }

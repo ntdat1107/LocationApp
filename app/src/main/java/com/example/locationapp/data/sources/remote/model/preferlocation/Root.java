@@ -1,7 +1,11 @@
 package com.example.locationapp.data.sources.remote.model.preferlocation;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Objects;
 
 public class Root {
     @SerializedName("error_code")
@@ -38,5 +42,28 @@ public class Root {
 
     public void setData(Data data) {
         this.data = data;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Root root = (Root) o;
+        return error_code == root.error_code && error_message.equals(root.error_message) && data.equals(root.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(error_code, error_message, data);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "{\n" +
+                "\"error_code\": 0,\n" +
+                "\"error_message\": \"\",\n" +
+                this.data.toString() +
+                "\n}";
     }
 }

@@ -1,5 +1,9 @@
 package com.example.locationapp.data.sources.remote.model.detaillocation;
 
+import androidx.annotation.NonNull;
+
+import java.util.Objects;
+
 public class LocationDetail {
     private String code;
     private String name;
@@ -53,5 +57,30 @@ public class LocationDetail {
 
     public void setLng(double lng) {
         this.lng = lng;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LocationDetail that = (LocationDetail) o;
+        return Double.compare(that.lat, lat) == 0 && Double.compare(that.lng, lng) == 0 && Objects.equals(code, that.code) && Objects.equals(name, that.name) && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, name, description, lat, lng);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "\"location\": {\n" +
+                "\"code\": \"" + this.code + "\",\n" +
+                "\"name\": \"" + this.name + "\",\n" +
+                "\"description\": \"" + this.description + "\",\n" +
+                "\"lat\": " + this.lat + ",\n" +
+                "\"lng\": " + this.lng + "\n" +
+                "}";
     }
 }

@@ -60,16 +60,10 @@ public class LocationViewModel extends ViewModel {
             public void onChanged(Resource<RootDetail> rootResource) {
                 if (rootResource.getStatus() == Status.SUCCESS) {
                     getLoading().setValue(false);
-                    if (rootResource.getData() == null) {
-                        getError_message().setValue("Empty data");
-                    } else if (rootResource.getData().getError_code() != 0) {
-                        getError_message().setValue(rootResource.getData().getError_message());
-                    } else {
-                        getLocationDetailMutableLiveData().setValue(rootResource.getData());
-                    }
+                    getLocationDetailMutableLiveData().setValue(rootResource.getData());
                 } else if (rootResource.getStatus() == Status.ERROR) {
                     getLoading().setValue(false);
-                    getError_message().setValue(rootResource.getError().getMessage());
+                    getError_message().setValue(rootResource.getData().getError_message());
                 }
             }
         });

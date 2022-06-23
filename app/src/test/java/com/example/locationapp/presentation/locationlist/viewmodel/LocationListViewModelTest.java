@@ -60,12 +60,8 @@ public class LocationListViewModelTest {
         });
         viewModel.fetchDataAPI();
 
-        Assert.assertNotNull(viewModel.getLoading().getValue());
         Assert.assertFalse(viewModel.getLoading().getValue());
-
-        Assert.assertNotNull(viewModel.getLocationsLiveData().getValue());
         Assert.assertEquals(viewModel.getLocationsLiveData().getValue(), res.getData());
-
     }
 
     @Test
@@ -94,10 +90,7 @@ public class LocationListViewModelTest {
 
         viewModel.fetchDataAPI();
 
-        Assert.assertNotNull(viewModel.getLoading().getValue());
         Assert.assertFalse(viewModel.getLoading().getValue());
-
-        Assert.assertNotNull(viewModel.getError_message());
         Assert.assertEquals(viewModel.getError_message().getValue(), res.getError_message());
     }
 }
