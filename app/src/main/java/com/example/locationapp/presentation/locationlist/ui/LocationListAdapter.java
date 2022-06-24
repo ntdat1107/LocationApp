@@ -6,17 +6,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.locationapp.R;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Location;
+import com.example.locationapp.data.sources.model.preferlocation.Location;
 import com.example.locationapp.databinding.LocationItemBinding;
-import com.example.locationapp.presentation.locationlist.viewmodel.LocationListViewModel;
 import com.squareup.picasso.Picasso;
 
-public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapter.ViewHolder> {
-    private final LocationListViewModel locationListViewModel;
+import java.util.List;
+
+public class LocationListAdapter extends ListAdapter<Location, LocationListAdapter.ViewHolder> {
+    private List<Location> locations;
     private final Context context;
+    public static final DiffUtil.ItemCallback<Location> diffUtilCallback = new LocationComparator();
 
     private OnItemClickListener onItemClickListener;
 
@@ -24,8 +29,8 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         this.onItemClickListener = onItemClickListener;
     }
 
-    public LocationListAdapter(LocationListViewModel locationListViewModel, Context context) {
-        this.locationListViewModel = locationListViewModel;
+    public LocationListAdapter(Context context) {
+        super(diffUtilCallback);
         this.context = context;
     }
 
@@ -37,18 +42,8 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (this.locationListViewModel.getLocationsLiveData().getValue() != null) {
-            Location location = this.locationListViewModel.getLocationsLiveData().getValue().getLocations().get(position);
-            holder.bind(location);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        if (this.locationListViewModel.getLocationsLiveData().getValue() == null) {
-            return 0;
-        }
-        return this.locationListViewModel.getLocationsLiveData().getValue().getLocations().size();
+        Location location = locations.get(position);
+        holder.bind(location);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -70,7 +65,26 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         }
     }
 
+    @Override
+    public void submitList(@Nullable List<Location> list) {
+        this.locations = list;
+        super.submitList(list);
+    }
+
     interface OnItemClickListener {
         void onItemClick(Location location, View container);
+    }
+
+    static class LocationComparator extends DiffUtil.ItemCallback<Location> {
+
+        @Override
+        public boolean areItemsTheSame(@NonNull Location oldItem, @NonNull Location newItem) {
+            return oldItem.getCode().equals(newItem.getCode());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Location oldItem, @NonNull Location newItem) {
+            return oldItem.equals(newItem);
+        }
     }
 }

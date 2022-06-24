@@ -1,4 +1,4 @@
-package com.example.locationapp.data.sources.remote.model.preferlocation;
+package com.example.locationapp.data.sources.model.preferlocation;
 
 import androidx.annotation.NonNull;
 

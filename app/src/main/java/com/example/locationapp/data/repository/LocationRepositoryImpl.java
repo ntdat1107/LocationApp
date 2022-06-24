@@ -1,13 +1,11 @@
 package com.example.locationapp.data.repository;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.locationapp.data.sources.remote.LocationAPI;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Root;
-import com.example.locationapp.data.sources.remote.model.detaillocation.RootDetail;
+import com.example.locationapp.data.sources.model.preferlocation.Root;
+import com.example.locationapp.data.sources.model.detaillocation.RootDetail;
 import com.example.locationapp.utils.Resource;
 
 import javax.inject.Inject;
@@ -43,7 +41,7 @@ public class LocationRepositoryImpl implements LocationRepository {
             @Override
             public void onResponse(@NonNull Call<Root> call, @NonNull Response<Root> response) {
                 if (response.body() == null) {
-                    preferLocation.setValue(new Resource.Error<>(new Root(999, "Empty data", null), null));
+                    preferLocation.setValue(new Resource.Error<>(new Root(response.code(), response.message(), null), null));
                 } else if (response.body().getError_code() != 0) {
                     preferLocation.setValue(new Resource.Error<>(response.body(), null));
                 } else {
@@ -73,7 +71,7 @@ public class LocationRepositoryImpl implements LocationRepository {
             @Override
             public void onResponse(@NonNull Call<RootDetail> call, @NonNull Response<RootDetail> response) {
                 if (response.body() == null) {
-                    detailLocation.setValue(new Resource.Error<>(new RootDetail(999, "Empty Data", null), null));
+                    detailLocation.setValue(new Resource.Error<>(new RootDetail(999, response.message(), null), null));
                 } else if (response.body().getError_code() != 0) {
                     detailLocation.setValue(new Resource.Error<>(response.body(), null));
                 } else {

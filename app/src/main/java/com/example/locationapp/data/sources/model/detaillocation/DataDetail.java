@@ -1,4 +1,4 @@
-package com.example.locationapp.data.sources.remote.model.detaillocation;
+package com.example.locationapp.data.sources.model.detaillocation;
 
 import androidx.annotation.NonNull;
 

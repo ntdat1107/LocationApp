@@ -1,7 +1,7 @@
 package com.example.locationapp.data.sources.remote;
 
-import com.example.locationapp.data.sources.remote.model.preferlocation.Root;
-import com.example.locationapp.data.sources.remote.model.detaillocation.RootDetail;
+import com.example.locationapp.data.sources.model.preferlocation.Root;
+import com.example.locationapp.data.sources.model.detaillocation.RootDetail;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

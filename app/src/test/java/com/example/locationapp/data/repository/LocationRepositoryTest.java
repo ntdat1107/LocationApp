@@ -5,12 +5,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.locationapp.data.sources.remote.LocationAPI;
-import com.example.locationapp.data.sources.remote.model.detaillocation.DataDetail;
-import com.example.locationapp.data.sources.remote.model.detaillocation.LocationDetail;
-import com.example.locationapp.data.sources.remote.model.detaillocation.RootDetail;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Data;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Location;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Root;
+import com.example.locationapp.data.sources.model.detaillocation.DataDetail;
+import com.example.locationapp.data.sources.model.detaillocation.LocationDetail;
+import com.example.locationapp.data.sources.model.detaillocation.RootDetail;
+import com.example.locationapp.data.sources.model.preferlocation.Data;
+import com.example.locationapp.data.sources.model.preferlocation.Location;
+import com.example.locationapp.data.sources.model.preferlocation.Root;
 import com.example.locationapp.utils.Resource;
 import com.example.locationapp.utils.Status;
 
@@ -198,7 +198,7 @@ public class LocationRepositoryTest {
             @Override
             public MockResponse dispatch(@NonNull RecordedRequest recordedRequest) {
                 if ("/v3/success".equals(recordedRequest.getPath())) {
-                    return new MockResponse().setResponseCode(400).setStatus("HTTP/1.1 404 Bad Request");
+                    return new MockResponse().setResponseCode(404).setStatus("HTTP/1.1 404 Bad Request");
                 }
                 return new MockResponse().setResponseCode(404);
             }
@@ -217,6 +217,7 @@ public class LocationRepositoryTest {
         });
 
         Assert.assertEquals(liveData.getValue().getStatus(), Status.ERROR);
+        Assert.assertEquals(liveData.getValue().getData().getError_message(), "Bad Request");
     }
 
     @Test

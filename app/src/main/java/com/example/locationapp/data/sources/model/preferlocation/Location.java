@@ -1,10 +1,15 @@
-package com.example.locationapp.data.sources.remote.model.preferlocation;
+package com.example.locationapp.data.sources.model.preferlocation;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Location {
+@Entity(tableName = "prefer_locations")
+public class Location implements Serializable {
+    @PrimaryKey
     private String id;
     private String code;
     private String name;
@@ -49,6 +54,7 @@ public class Location {
     public void setImage(String image) {
         this.image = image;
     }
+
 
     @Override
     public boolean equals(Object o) {

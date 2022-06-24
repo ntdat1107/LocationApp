@@ -1,10 +1,12 @@
-package com.example.locationapp.data.sources.remote.model.detaillocation;
+package com.example.locationapp.data.sources.model.detaillocation;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class LocationDetail {
+public class LocationDetail implements Serializable {
+
     private String code;
     private String name;
     private String description;

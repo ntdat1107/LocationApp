@@ -2,7 +2,6 @@ package com.example.locationapp.presentation.locationlist.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +9,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.locationapp.R;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Location;
+import com.example.locationapp.data.sources.model.preferlocation.Data;
+import com.example.locationapp.data.sources.model.preferlocation.Location;
 import com.example.locationapp.databinding.FragmentLocationListBinding;
 import com.example.locationapp.presentation.locationlist.viewmodel.LocationListViewModel;
 
@@ -29,6 +29,7 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
     private FragmentLocationListBinding binding;
     private LocationListAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private final MutableLiveData<Data> recyclerLiveData = new MutableLiveData<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,52 +54,28 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
         setUpRecyclerView();
 
         swipeRefreshLayout.setOnRefreshListener(this);
-        fetchData();
     }
 
     private void setUpRecyclerView() {
-        adapter = new LocationListAdapter(locationListViewModel, requireContext());
+        adapter = new LocationListAdapter(requireContext());
         adapter.setOnItemClickListener(this);
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 
     @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
-    private void fetchData() {
-        locationListViewModel.getLocationsLiveData().observe(requireActivity(), data -> {
-            if (data != null) {
-                adapter.notifyDataSetChanged();
-                binding.recyclerView.setVisibility(View.VISIBLE);
-            }
-        });
+    private void setUpObserver() {
+        locationListViewModel.getLocationsLiveData().observe(getViewLifecycleOwner(), this::observeLocationLiveData);
 
-        locationListViewModel.getLoading().observe(requireActivity(), aBoolean -> {
-            if (aBoolean) {
-                binding.loading.setVisibility(View.VISIBLE);
-            } else {
-                swipeRefreshLayout.setRefreshing(false);
-                binding.loading.setVisibility(View.INVISIBLE);
-            }
-        });
+        locationListViewModel.getLoading().observe(requireActivity(), this::observeLoading);
 
-        locationListViewModel.getError_message().observe(requireActivity(), s -> {
-            if (s != null) {
-                binding.errorMsg.setVisibility(View.VISIBLE);
-                binding.errorMsg.setText(s + "\nSwipe to refresh!!");
-                binding.recyclerView.setVisibility(View.GONE);
-            } else {
-                binding.errorMsg.setVisibility(View.GONE);
-            }
-        });
+        locationListViewModel.getError_message().observe(requireActivity(), this::observeErrorMessage);
     }
 
     @Override
     public void onItemClick(Location location, View container) {
-        Bundle bundle = new Bundle();
-        bundle.putString("code", location.getId());
-        bundle.putString("image", location.getImage());
-        bundle.putString("title", location.getName());
-        Navigation.findNavController(container).navigate(R.id.action_locationListFragment_to_locationDetailFragment, bundle);
+        LocationListFragmentDirections.ActionLocationListFragmentToLocationDetailFragment action = LocationListFragmentDirections.actionLocationListFragmentToLocationDetailFragment(location);
+        Navigation.findNavController(container).navigate(action);
     }
 
     @Override
@@ -109,8 +86,41 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
     @Override
     public void onResume() {
         super.onResume();
+        setUpObserver();
         locationListViewModel.fetchDataAPI();
-        Log.i("test", locationListViewModel.toString());
-        Log.i("test", locationListViewModel.locationRepository.toString());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        locationListViewModel.getLocationsLiveData().removeObserver(this::observeLocationLiveData);
+        locationListViewModel.getLoading().removeObserver(this::observeLoading);
+        locationListViewModel.getError_message().removeObserver(this::observeErrorMessage);
+    }
+
+    private void observeLocationLiveData(Data data) {
+        if (data != null) {
+            adapter.submitList(data.getLocations());
+            binding.recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void observeLoading(Boolean aBoolean) {
+        if (aBoolean) {
+            binding.loading.setVisibility(View.VISIBLE);
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
+            binding.loading.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void observeErrorMessage(String s) {
+        if (s != null) {
+            binding.errorMsg.setVisibility(View.VISIBLE);
+            binding.errorMsg.setText(s + "\nSwipe to refresh!!");
+            binding.recyclerView.setVisibility(View.GONE);
+        } else {
+            binding.errorMsg.setVisibility(View.GONE);
+        }
     }
 }

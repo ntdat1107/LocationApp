@@ -2,13 +2,12 @@ package com.example.locationapp.presentation.locationlist.viewmodel;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.example.locationapp.data.repository.LocationRepository;
 import com.example.locationapp.data.repository.LocationRepositoryImpl;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Data;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Location;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Root;
+import com.example.locationapp.data.sources.model.preferlocation.Data;
+import com.example.locationapp.data.sources.model.preferlocation.Location;
+import com.example.locationapp.data.sources.model.preferlocation.Root;
 import com.example.locationapp.utils.Resource;
 
 import org.junit.Assert;
@@ -43,21 +42,8 @@ public class LocationListViewModelTest {
 
         MutableLiveData<Resource<Root>> response = new MutableLiveData<>(new Resource.Success<>(res));
 
-        response.observeForever(new Observer<Resource<Root>>() {
-            @Override
-            public void onChanged(Resource<Root> rootResource) {
-
-            }
-        });
-
         Mockito.when(repository.getAllLocation()).thenReturn(response);
 
-        viewModel.getLocationsLiveData().observeForever(new Observer<Data>() {
-            @Override
-            public void onChanged(Data data) {
-
-            }
-        });
         viewModel.fetchDataAPI();
 
         Assert.assertFalse(viewModel.getLoading().getValue());
@@ -70,23 +56,9 @@ public class LocationListViewModelTest {
 
         Root res = new Root(666, "Server error", new Data(locationList));
 
-        MutableLiveData<Resource<Root>> response = new MutableLiveData<>(new Resource.Success<>(res));
-
-        response.observeForever(new Observer<Resource<Root>>() {
-            @Override
-            public void onChanged(Resource<Root> rootResource) {
-
-            }
-        });
+        MutableLiveData<Resource<Root>> response = new MutableLiveData<>(new Resource.Error<>(res, null));
 
         Mockito.when(repository.getAllLocation()).thenReturn(response);
-
-        viewModel.getLocationsLiveData().observeForever(new Observer<Data>() {
-            @Override
-            public void onChanged(Data data) {
-
-            }
-        });
 
         viewModel.fetchDataAPI();
 

@@ -1,15 +1,12 @@
 package com.example.locationapp.presentation.locationlist.viewmodel;
 
-import androidx.arch.core.util.Function;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.example.locationapp.data.repository.LocationRepository;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Data;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Root;
+import com.example.locationapp.data.sources.model.preferlocation.Data;
+import com.example.locationapp.data.sources.model.preferlocation.Root;
 import com.example.locationapp.utils.Resource;
 import com.example.locationapp.utils.Status;
 
@@ -69,7 +66,7 @@ public class LocationListViewModel extends ViewModel {
                     getLocationsLiveData().setValue(rootResource.getData().getData());
                 } else if (rootResource.getStatus() == Status.ERROR) {
                     getLoading().setValue(false);
-                    getError_message().setValue(rootResource.getError().getMessage());
+                    getError_message().setValue(rootResource.getData().getError_message());
                 }
             }
         });

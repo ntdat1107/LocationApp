@@ -1,12 +1,13 @@
-package com.example.locationapp.data.sources.remote.model.detaillocation;
+package com.example.locationapp.data.sources.model.detaillocation;
 
 import androidx.annotation.NonNull;
 
+import com.example.locationapp.data.sources.model.BaseRoot;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
-public class RootDetail {
+public class RootDetail extends BaseRoot {
     @SerializedName("error_code")
     private int error_code;
     @SerializedName("error_message")

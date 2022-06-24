@@ -4,9 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.locationapp.data.sources.remote.model.detaillocation.RootDetail;
 import com.example.locationapp.data.repository.LocationRepository;
-import com.example.locationapp.data.sources.remote.model.preferlocation.Root;
+import com.example.locationapp.data.sources.model.detaillocation.RootDetail;
 import com.example.locationapp.utils.Resource;
 import com.example.locationapp.utils.Status;
 
