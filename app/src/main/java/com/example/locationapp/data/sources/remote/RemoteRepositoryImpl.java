@@ -1,9 +1,7 @@
-package com.example.locationapp.data.repository;
+package com.example.locationapp.data.sources.remote;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.locationapp.data.sources.remote.LocationAPI;
 import com.example.locationapp.data.sources.model.preferlocation.Root;
 import com.example.locationapp.data.sources.model.detaillocation.RootDetail;
 import com.example.locationapp.utils.Resource;
@@ -11,10 +9,8 @@ import com.example.locationapp.utils.Resource;
 import javax.inject.Inject;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class LocationRepositoryImpl implements LocationRepository {
+public class RemoteRepositoryImpl implements RemoteRepository {
 
     private final LocationAPI mLocationAPI;
 
@@ -23,7 +19,7 @@ public class LocationRepositoryImpl implements LocationRepository {
     private final MutableLiveData<Resource<RootDetail>> detailLocation;
 
     @Inject
-    public LocationRepositoryImpl(LocationAPI mLocationAPI) {
+    public RemoteRepositoryImpl(LocationAPI mLocationAPI) {
         this.mLocationAPI = mLocationAPI;
         preferLocation = new MutableLiveData<>();
         detailLocation = new MutableLiveData<>();

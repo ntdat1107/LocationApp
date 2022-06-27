@@ -1,16 +1,11 @@
 package com.example.locationapp.presentation.locationlist.viewmodel;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.locationapp.data.repository.LocationRepository;
-import com.example.locationapp.data.repository.LocationRepositoryImpl;
-import com.example.locationapp.data.repository.TestRepository;
-import com.example.locationapp.data.repository.TestRepositoryImpl;
-import com.example.locationapp.data.sources.model.preferlocation.Data;
+import com.example.locationapp.data.remote.LocationRepository;
+import com.example.locationapp.data.remote.LocationRepositoryImpl;
 import com.example.locationapp.data.sources.model.preferlocation.Location;
-import com.example.locationapp.data.sources.model.preferlocation.Root;
 import com.example.locationapp.utils.Resource;
 
 import org.junit.Assert;
@@ -27,7 +22,7 @@ public class LocationListViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    TestRepository repository = Mockito.mock(TestRepositoryImpl.class);
+    LocationRepository repository = Mockito.mock(LocationRepositoryImpl.class);
 
     LocationListViewModel viewModel;
 
@@ -50,22 +45,23 @@ public class LocationListViewModelTest {
         viewModel.fetchDataAPI();
 
         Assert.assertFalse(viewModel.getLoading().getValue());
-        Assert.assertEquals(viewModel.getLocationsLiveData().getValue(), ;
+        Assert.assertEquals(viewModel.getLocationsLiveData().getValue(), locationList);
     }
 
     @Test
     public void testFailAPI() {
         List<Location> locationList = new ArrayList<>();
+        locationList.add(new Location("777d17bc-a5fa-4a06-8146-b7c6e7040b8f", "gem", "Gem Center", "http://gemcenter.com.vn/Images/img/gem_logo.png"));
+        Resource<List<Location>> response = new Resource.Error<>(locationList, "Server error");
 
-        Root res = new Root(666, "Server error", new Data(locationList));
+        MutableLiveData<Resource<List<Location>>> liveData = new MutableLiveData<>();
+        liveData.setValue(response);
 
-        MutableLiveData<Resource<Root>> response = new MutableLiveData<>(new Resource.Error<>(res, null));
-
-        Mockito.when(repository.getAllLocation()).thenReturn(response);
+        Mockito.when(repository.getPreferLocations()).thenReturn(liveData);
 
         viewModel.fetchDataAPI();
 
         Assert.assertFalse(viewModel.getLoading().getValue());
-        Assert.assertEquals(viewModel.getError_message().getValue(), res.getError_message());
+        Assert.assertEquals(viewModel.getError_message().getValue(), response.getError());
     }
 }

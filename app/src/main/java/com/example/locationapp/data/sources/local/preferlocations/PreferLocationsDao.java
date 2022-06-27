@@ -1,4 +1,4 @@
-package com.example.locationapp.data.sources.local;
+package com.example.locationapp.data.sources.local.preferlocations;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
@@ -13,12 +13,10 @@ import com.example.locationapp.data.sources.model.preferlocation.Location;
 import java.util.List;
 
 @Dao
-public interface LocationDao {
+public interface PreferLocationsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertLocation(Location location);
 
     @Query("SELECT * FROM locations")
     LiveData<List<Location>> getAllPreferLocations();
-
-
 }

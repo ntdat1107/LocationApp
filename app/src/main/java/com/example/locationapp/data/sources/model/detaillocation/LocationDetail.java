@@ -1,24 +1,39 @@
 package com.example.locationapp.data.sources.model.detaillocation;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+@Entity(tableName = "location")
 public class LocationDetail implements Serializable {
-
+    @PrimaryKey
+    @NonNull
+    private String id;
     private String code;
     private String name;
     private String description;
     private double lat;
     private double lng;
 
-    public LocationDetail(String code, String name, String description, double lat, double lng) {
+    public LocationDetail(@NonNull String id, String code, String name, String description, double lat, double lng) {
+        this.id = id;
         this.code = code;
         this.name = name;
         this.description = description;
         this.lat = lat;
         this.lng = lng;
+    }
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
     }
 
     public String getCode() {

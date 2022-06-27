@@ -89,9 +89,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType extends BaseR
     protected abstract void saveCallResult(@NonNull RequestType item);
 
     @MainThread
-    protected boolean shouldFetch(@Nullable ResultType data) {
-        return true;
-    }
+    protected abstract boolean shouldFetch(@Nullable ResultType data);
 
     @NonNull
     @MainThread

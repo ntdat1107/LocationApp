@@ -1,4 +1,4 @@
-package com.example.locationapp.data.repository;
+package com.example.locationapp.data.sources.remote;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -8,7 +8,7 @@ import com.example.locationapp.utils.Resource;
 
 import retrofit2.Call;
 
-public interface LocationRepository {
+public interface RemoteRepository {
     Call<Root> getAllLocation();
 
     Call<RootDetail> getLocationDetail(String locationID);

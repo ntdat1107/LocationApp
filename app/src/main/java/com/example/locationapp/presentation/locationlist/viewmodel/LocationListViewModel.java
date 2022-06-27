@@ -1,17 +1,12 @@
 package com.example.locationapp.presentation.locationlist.viewmodel;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.locationapp.data.repository.LocationRepository;
-import com.example.locationapp.data.repository.TestRepository;
-import com.example.locationapp.data.sources.model.preferlocation.Data;
+import com.example.locationapp.data.remote.LocationRepository;
 import com.example.locationapp.data.sources.model.preferlocation.Location;
-import com.example.locationapp.data.sources.model.preferlocation.Root;
 import com.example.locationapp.utils.Resource;
 import com.example.locationapp.utils.Status;
 
@@ -23,7 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class LocationListViewModel extends ViewModel {
-    public final TestRepository testRepository;
+    public final LocationRepository locationRepository;
 
     private MutableLiveData<List<Location>> locationsLiveData;
 
@@ -48,8 +43,8 @@ public class LocationListViewModel extends ViewModel {
     }
 
     @Inject
-    public LocationListViewModel(TestRepository testRepository) {
-        this.testRepository = testRepository;
+    public LocationListViewModel(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
     }
 
     public MutableLiveData<List<Location>> getLocationsLiveData() {
@@ -65,7 +60,7 @@ public class LocationListViewModel extends ViewModel {
         getError_message().postValue(null);
         getLocationsLiveData().postValue(null);
 
-        liveData = testRepository.getPreferLocations();
+        liveData = locationRepository.getPreferLocations();
 
         liveData.observeForever(new Observer<Resource<List<Location>>>() {
             @Override

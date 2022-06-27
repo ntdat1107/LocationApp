@@ -17,13 +17,14 @@ public class Location implements Serializable {
     private String image;
 
 
-    public Location(String id, String code, String name, String image) {
+    public Location(@NonNull String id, String code, String name, String image) {
         this.id = id;
         this.code = code;
         this.name = name;
         this.image = image;
     }
 
+    @NonNull
     public String getId() {
         return id;
     }

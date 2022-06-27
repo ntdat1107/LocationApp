@@ -1,11 +1,14 @@
 package com.example.locationapp.presentation.locationdetail.viewmodel;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.locationapp.data.repository.LocationRepository;
+import com.example.locationapp.data.remote.LocationRepository;
+import com.example.locationapp.data.sources.model.detaillocation.LocationDetail;
 import com.example.locationapp.data.sources.model.detaillocation.RootDetail;
+import com.example.locationapp.data.sources.remote.RemoteRepository;
 import com.example.locationapp.utils.Resource;
 import com.example.locationapp.utils.Status;
 
@@ -17,9 +20,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class LocationViewModel extends ViewModel {
 
     public final LocationRepository locationRepository;
-    private MutableLiveData<RootDetail> locationDetailMutableLiveData;
+    private MutableLiveData<LocationDetail> locationDetailMutableLiveData;
     private MutableLiveData<Boolean> loading;
     private MutableLiveData<String> error_message;
+    private LiveData<Resource<LocationDetail>> liveData;
+
 
     public MutableLiveData<Boolean> getLoading() {
         if (loading == null) {
@@ -35,7 +40,7 @@ public class LocationViewModel extends ViewModel {
         return error_message;
     }
 
-    public MutableLiveData<RootDetail> getLocationDetailMutableLiveData() {
+    public MutableLiveData<LocationDetail> getLocationDetailMutableLiveData() {
         if (locationDetailMutableLiveData == null) {
             locationDetailMutableLiveData = new MutableLiveData<>();
         }
@@ -52,32 +57,20 @@ public class LocationViewModel extends ViewModel {
         getError_message().postValue(null);
         getLocationDetailMutableLiveData().postValue(null);
 
+        liveData = locationRepository.getDetailLocation(locationID);
 
-
-//        call.enqueue(new Callback<RootDetail>() {
-//            @Override
-//            public void onResponse(@NonNull Call<RootDetail> call, @NonNull Response<RootDetail> response) {
-//                if (response.isSuccessful()) {
-//                    if (response.body() == null) {
-//                        getError_message().setValue("Empty data");
-//                    } else if (response.body().getError_code() != 0) {
-//                        getError_message().setValue(response.body().getError_message());
-//                    } else {
-//                        getLocationDetailMutableLiveData().setValue(response.body());
-//                        getError_message().setValue(null);
-//                    }
-//                } else {
-//                    getError_message().setValue(response.message());
-//                }
-//                loading.setValue(false);
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<RootDetail> call, @NonNull Throwable t) {
-//                getError_message().setValue(t.getMessage());
-//                loading.setValue(false);
-//            }
-//        });
+        liveData.observeForever(new Observer<Resource<LocationDetail>>() {
+            @Override
+            public void onChanged(Resource<LocationDetail> locationDetailResource) {
+                if (locationDetailResource.getStatus() == Status.SUCCESS) {
+                    getLoading().setValue(false);
+                    getLocationDetailMutableLiveData().setValue(locationDetailResource.getData());
+                } else if (locationDetailResource.getStatus() == Status.ERROR) {
+                    getLoading().setValue(false);
+                    getError_message().setValue(locationDetailResource.getError());
+                }
+            }
+        });
     }
 
 }

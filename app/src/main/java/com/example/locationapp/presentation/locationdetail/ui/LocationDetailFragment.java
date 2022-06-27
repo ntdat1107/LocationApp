@@ -130,10 +130,10 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
         }
     }
 
-    private void observeLocationDetail(RootDetail rootDetail) {
-        if (rootDetail != null) {
+    private void observeLocationDetail(LocationDetail locationDetail) {
+        if (locationDetail != null) {
             binding.detail.setVisibility(View.VISIBLE);
-            bindData(rootDetail.getData().getLocation());
+            bindData(locationDetail);
         } else {
             binding.detail.setVisibility(View.GONE);
         }
