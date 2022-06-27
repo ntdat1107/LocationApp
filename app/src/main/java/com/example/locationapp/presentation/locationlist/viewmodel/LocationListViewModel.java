@@ -1,14 +1,21 @@
 package com.example.locationapp.presentation.locationlist.viewmodel;
 
+import android.util.Log;
+
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.example.locationapp.data.repository.LocationRepository;
+import com.example.locationapp.data.repository.TestRepository;
 import com.example.locationapp.data.sources.model.preferlocation.Data;
+import com.example.locationapp.data.sources.model.preferlocation.Location;
 import com.example.locationapp.data.sources.model.preferlocation.Root;
 import com.example.locationapp.utils.Resource;
 import com.example.locationapp.utils.Status;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -16,13 +23,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class LocationListViewModel extends ViewModel {
-    public final LocationRepository locationRepository;
+    public final TestRepository testRepository;
 
-    private MutableLiveData<Data> locationsLiveData;
+    private MutableLiveData<List<Location>> locationsLiveData;
 
     private MutableLiveData<Boolean> loading;
 
     private MutableLiveData<String> error_message;
+
+    LiveData<Resource<List<Location>>> liveData;
 
     public MutableLiveData<Boolean> getLoading() {
         if (loading == null) {
@@ -39,13 +48,13 @@ public class LocationListViewModel extends ViewModel {
     }
 
     @Inject
-    public LocationListViewModel(LocationRepository locationRepository) {
-        this.locationRepository = locationRepository;
+    public LocationListViewModel(TestRepository testRepository) {
+        this.testRepository = testRepository;
     }
 
-    public MutableLiveData<Data> getLocationsLiveData() {
+    public MutableLiveData<List<Location>> getLocationsLiveData() {
         if (locationsLiveData == null) {
-            locationsLiveData = new MutableLiveData<Data>();
+            locationsLiveData = new MutableLiveData<List<Location>>();
         }
         return locationsLiveData;
 
@@ -56,41 +65,20 @@ public class LocationListViewModel extends ViewModel {
         getError_message().postValue(null);
         getLocationsLiveData().postValue(null);
 
-        MutableLiveData<Resource<Root>> response = locationRepository.getAllLocation();
+        liveData = testRepository.getPreferLocations();
 
-        response.observeForever(new Observer<Resource<Root>>() {
+        liveData.observeForever(new Observer<Resource<List<Location>>>() {
             @Override
-            public void onChanged(Resource<Root> rootResource) {
-                if (rootResource.getStatus() == Status.SUCCESS) {
+            public void onChanged(Resource<List<Location>> listResource) {
+                if (listResource.getStatus() == Status.SUCCESS) {
                     getLoading().setValue(false);
-                    getLocationsLiveData().setValue(rootResource.getData().getData());
-                } else if (rootResource.getStatus() == Status.ERROR) {
+                    getLocationsLiveData().setValue(listResource.getData());
+                } else if (listResource.getStatus() == Status.ERROR) {
                     getLoading().setValue(false);
-                    getError_message().setValue(rootResource.getData().getError_message());
+                    getError_message().setValue(listResource.getError());
                 }
             }
         });
-
-//        private MutableLiveData<String> processInput = new MutableLiveData<>();
-//        public final LiveData<String> formatJson = Transformations
-//                .switchMap(Transformations.distinctUntilChanged(processInput),
-//                        new Function<String, LiveData<String>>() {
-//                            @Override
-//                            public LiveData<String> apply(String input) {
-//                                return Transformations.map(repo.getJson(input), output -> {
-//                                    if(output.getStatus() != Status.SUCCESS) {
-//                                        return context.getString(R.string.process_user_comments) ;
-//                                    } else {
-//                                        return output.getData();
-//                                    }
-//                                });
-//                            }
-//                        });
-//
-//
-//        public void requestJsonFromInput(String input) {
-//            processInput.setValue(input);
-//        }
 
     }
 }

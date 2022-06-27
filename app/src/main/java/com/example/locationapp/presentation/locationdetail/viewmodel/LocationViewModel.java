@@ -52,21 +52,6 @@ public class LocationViewModel extends ViewModel {
         getError_message().postValue(null);
         getLocationDetailMutableLiveData().postValue(null);
 
-        MutableLiveData<Resource<RootDetail>> response = locationRepository.getLocationDetail(locationID);
-
-        response.observeForever(new Observer<Resource<RootDetail>>() {
-            @Override
-            public void onChanged(Resource<RootDetail> rootResource) {
-                if (rootResource.getStatus() == Status.SUCCESS) {
-                    getLoading().setValue(false);
-                    getLocationDetailMutableLiveData().setValue(rootResource.getData());
-                } else if (rootResource.getStatus() == Status.ERROR) {
-                    getLoading().setValue(false);
-                    getError_message().setValue(rootResource.getData().getError_message());
-                }
-            }
-        });
-
 
 
 //        call.enqueue(new Callback<RootDetail>() {

@@ -15,11 +15,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public abstract class NetworkBoundResource<ResultType, RequestType extends BaseRootResponse> {
-    private AppExecutors appExecutors;
+    private final AppExecutors appExecutors;
     private final MediatorLiveData<Resource<ResultType>> result = new MediatorLiveData<>();
 
     @MainThread
-    NetworkBoundResource(AppExecutors appExecutors) {
+    public NetworkBoundResource(AppExecutors appExecutors) {
         this.appExecutors = appExecutors;
         init();
     }
@@ -44,11 +44,12 @@ public abstract class NetworkBoundResource<ResultType, RequestType extends BaseR
             @Override
             public void onResponse(Call<RequestType> call, Response<RequestType> response) {
                 result.removeSource(dbSource);
-                if (response.body() == null || response.body().getError_code() != 0) {
-                    result.addSource(dbSource, newData -> setValue(null));
+                if (response.body() == null) {
+                    result.addSource(dbSource, newData -> setValue(new Resource.Error<>(newData, response.message())));
+                } else if (response.body().getError_code() != 0) {
+                    result.addSource(dbSource, newData -> setValue(new Resource.Error<>(newData, response.body().getError_message())));
                 } else {
                     saveResultAndReInit(response.body());
-
                 }
             }
 
@@ -80,7 +81,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType extends BaseR
 
     private void setValue(Resource<ResultType> newValue) {
         if (result.getValue() != newValue) {
-            setValue(newValue);
+            result.setValue(newValue);
         }
     }
 

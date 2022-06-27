@@ -1,6 +1,6 @@
 package com.example.locationapp.data.repository;
 
-import androidx.lifecycle.LiveData;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.locationapp.data.sources.remote.LocationAPI;
@@ -9,6 +9,10 @@ import com.example.locationapp.data.sources.model.detaillocation.RootDetail;
 import com.example.locationapp.utils.Resource;
 
 import javax.inject.Inject;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LocationRepositoryImpl implements LocationRepository {
 
@@ -26,12 +30,12 @@ public class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public LiveData<Root> getAllLocation() {
+    public Call<Root> getAllLocation() {
         return mLocationAPI.fetchAllLocation();
     }
 
     @Override
-    public LiveData<RootDetail> getLocationDetail(String locationID) {
+    public Call<RootDetail> getLocationDetail(String locationID) {
         return mLocationAPI.fetchLocationDetail(locationID);
     }
 

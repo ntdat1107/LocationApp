@@ -21,6 +21,8 @@ import com.example.locationapp.data.sources.model.preferlocation.Location;
 import com.example.locationapp.databinding.FragmentLocationListBinding;
 import com.example.locationapp.presentation.locationlist.viewmodel.LocationListViewModel;
 
+import java.util.List;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -114,9 +116,9 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
         locationListViewModel.getError_message().removeObserver(this::observeErrorMessage);
     }
 
-    private void observeLocationLiveData(Data data) {
+    private void observeLocationLiveData(List<Location> data) {
         if (data != null) {
-            adapter.submitList(data.getLocations());
+            adapter.submitList(data);
             adapter.getFilter().filter(binding.searchBar.getQuery());
             binding.recyclerView.setVisibility(View.VISIBLE);
         }
