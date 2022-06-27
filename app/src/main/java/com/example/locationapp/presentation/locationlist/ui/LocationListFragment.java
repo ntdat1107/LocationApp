@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,7 +44,6 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
         binding = FragmentLocationListBinding.inflate(inflater, container, false);
 
         swipeRefreshLayout = binding.swipeRefreshLayout;
-
         locationListViewModel = new ViewModelProvider(this).get(LocationListViewModel.class);
         return binding.getRoot();
     }
@@ -52,6 +52,7 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setUpRecyclerView();
+        setUpFilter();
 
         swipeRefreshLayout.setOnRefreshListener(this);
     }
@@ -61,6 +62,21 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
         adapter.setOnItemClickListener(this);
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    }
+
+    private void setUpFilter() {
+        binding.searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 
     @SuppressLint({"NotifyDataSetChanged", "SetTextI18n"})
@@ -101,6 +117,7 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
     private void observeLocationLiveData(Data data) {
         if (data != null) {
             adapter.submitList(data.getLocations());
+            adapter.getFilter().filter(binding.searchBar.getQuery());
             binding.recyclerView.setVisibility(View.VISIBLE);
         }
     }
