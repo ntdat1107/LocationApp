@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 import com.example.locationapp.data.sources.model.BaseRootResponse;
+import com.example.locationapp.data.sources.model.preferlocation.Root;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,10 +44,11 @@ public abstract class NetworkBoundResource<ResultType, RequestType extends BaseR
             @Override
             public void onResponse(Call<RequestType> call, Response<RequestType> response) {
                 result.removeSource(dbSource);
-                if (response.body() == null) {
+                if (response.body() == null || response.body().getError_code() != 0) {
                     result.addSource(dbSource, newData -> setValue(null));
-                } else if (response.body().getError_code() != 0) {
+                } else {
                     saveResultAndReInit(response.body());
+
                 }
             }
 
