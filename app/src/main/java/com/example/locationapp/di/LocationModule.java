@@ -43,10 +43,10 @@ public class LocationModule {
     public LocationRepository provideLocationRepository(LocationAPI locationAPI) {
         return new LocationRepositoryImpl(locationAPI);
     }
-
-    @Provides
-    @Singleton
-    public LocationDatabase provideDatabase(Application application) {
-        return Room.databaseBuilder(application, LocationDatabase.class, "prefer_locations_database").build();
-    }
+//
+//    @Provides
+//    @Singleton
+//    public LocationDatabase provideDatabase(Application application) {
+//        return Room.databaseBuilder(application, LocationDatabase.class, "prefer_locations_database").build();
+//    }
 }

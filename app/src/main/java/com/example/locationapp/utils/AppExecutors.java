@@ -16,6 +16,15 @@ public class AppExecutors {
 
     private final Executor mMainThread;
 
+    private static AppExecutors instance;
+
+    public static AppExecutors getInstance(){
+        if(instance == null){
+            instance = new AppExecutors();
+        }
+        return instance;
+    }
+
     private AppExecutors(Executor diskIO, Executor networkIO, Executor mainThread) {
         this.mDiskIO = diskIO;
         this.mNetworkIO = networkIO;

@@ -51,7 +51,7 @@ public class LocationRepositoryImpl implements LocationRepository {
 
             @Override
             public void onFailure(Call<Root> call, Throwable t) {
-                preferLocation.setValue(new Resource.Error<>(new Root(999, t.getMessage(), null), t));
+                preferLocation.setValue(new Resource.Error<>(new Root(999, t.getMessage(), null), t.getMessage()));
             }
         });
         return preferLocation;
@@ -81,7 +81,7 @@ public class LocationRepositoryImpl implements LocationRepository {
 
             @Override
             public void onFailure(Call<RootDetail> call, Throwable t) {
-                detailLocation.setValue(new Resource.Error<>(new RootDetail(999, t.getMessage(), null), t));
+                detailLocation.setValue(new Resource.Error<>(new RootDetail(999, t.getMessage(), null), t.getMessage()));
             }
         });
         return detailLocation;

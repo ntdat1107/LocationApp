@@ -15,9 +15,9 @@ import java.util.List;
 @Dao
 public interface LocationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertLocation(List<Location> location);
+    void insertLocation(Location location);
 
-    @Query("SELECT * FROM prefer_locations")
+    @Query("SELECT * FROM locations")
     LiveData<List<Location>> getAllPreferLocations();
 
 

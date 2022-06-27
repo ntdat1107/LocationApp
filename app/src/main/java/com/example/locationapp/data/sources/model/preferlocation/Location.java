@@ -7,9 +7,10 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity(tableName = "prefer_locations")
+@Entity(tableName = "locations")
 public class Location implements Serializable {
     @PrimaryKey
+    @NonNull
     private String id;
     private String code;
     private String name;

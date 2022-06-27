@@ -117,8 +117,8 @@ public class LocationRepositoryTest {
 
         });
         Assert.assertEquals(liveData.getValue().getStatus(), Status.ERROR);
-        Assert.assertEquals(liveData.getValue().getData().getError_code(), 999);
-        Assert.assertEquals(liveData.getValue().getData().getError_message(), "Empty data");
+        Assert.assertEquals(liveData.getValue().getData().getError_code(), 404);
+        Assert.assertEquals(liveData.getValue().getData().getError_message(), "Client Error");
     }
 
     @Test
@@ -166,9 +166,7 @@ public class LocationRepositoryTest {
             @Override
             public MockResponse dispatch(@NonNull RecordedRequest recordedRequest) {
                 if ("/v3/success".equals(recordedRequest.getPath())) {
-                    return new MockResponse().setResponseCode(200).setBody("{\n" +
-                            rootDetail +
-                            "\n}");
+                    return new MockResponse().setResponseCode(200).setBody(rootDetail.toString());
                 }
                 return new MockResponse().setResponseCode(404);
             }

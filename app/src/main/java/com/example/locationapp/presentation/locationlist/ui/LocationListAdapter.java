@@ -23,12 +23,16 @@ import java.util.List;
 
 public class LocationListAdapter extends ListAdapter<Location, LocationListAdapter.ViewHolder> implements Filterable {
     private List<Location> locations;
+    private List<Location> filterLocations;
     private final Context context;
     public static final DiffUtil.ItemCallback<Location> diffUtilCallback = new LocationComparator();
     private final Filter filter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<Location> filterLocations = new ArrayList<>();
+            if (filterLocations == null) {
+                filterLocations = new ArrayList<>();
+            }
+            filterLocations.clear();
             if (constraint == null || constraint.length() == 0) {
                 filterLocations.addAll(locations);
             } else {

@@ -3,9 +3,9 @@ package com.example.locationapp.utils;
 public class Resource<T> {
     protected Status status;
     protected T data;
-    protected Throwable error;
+    protected String error;
 
-    protected Resource(Status status, T data, Throwable error) {
+    protected Resource(Status status, T data, String error) {
         this.status = status;
         this.data = data;
         this.error = error;
@@ -19,7 +19,7 @@ public class Resource<T> {
         return data;
     }
 
-    public Throwable getError() {
+    public String getError() {
         return error;
     }
 
@@ -42,7 +42,7 @@ public class Resource<T> {
     }
 
     public static class Error<T> extends Resource<T> {
-        public Error(T data, Throwable error) {
+        public Error(T data, String error) {
             super(Status.ERROR, data, error);
         }
     }
