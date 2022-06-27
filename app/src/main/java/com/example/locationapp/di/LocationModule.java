@@ -1,12 +1,7 @@
 package com.example.locationapp.di;
 
-import android.app.Application;
-
-import androidx.room.Room;
-
 import com.example.locationapp.data.repository.LocationRepository;
 import com.example.locationapp.data.repository.LocationRepositoryImpl;
-import com.example.locationapp.data.sources.local.LocationDatabase;
 import com.example.locationapp.data.sources.remote.LocationAPI;
 
 import javax.inject.Singleton;
@@ -14,8 +9,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
-import dagger.hilt.android.components.ViewModelComponent;
-import dagger.hilt.android.scopes.ViewModelScoped;
 import dagger.hilt.components.SingletonComponent;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

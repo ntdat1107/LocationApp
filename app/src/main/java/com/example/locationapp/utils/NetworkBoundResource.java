@@ -1,7 +1,5 @@
 package com.example.locationapp.utils;
 
-import android.os.AsyncTask;
-
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,14 +7,13 @@ import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
-import com.example.locationapp.data.sources.model.BaseRoot;
-import com.example.locationapp.data.sources.model.preferlocation.Root;
+import com.example.locationapp.data.sources.model.BaseRootResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public abstract class NetworkBoundResource<ResultType, RequestType extends BaseRoot> {
+public abstract class NetworkBoundResource<ResultType, RequestType extends BaseRootResponse> {
     private AppExecutors appExecutors;
     private final MediatorLiveData<Resource<ResultType>> result = new MediatorLiveData<>();
 
@@ -57,32 +54,30 @@ public abstract class NetworkBoundResource<ResultType, RequestType extends BaseR
             public void onFailure(Call<RequestType> call, Throwable t) {
                 onFetchFailed();
                 result.removeSource(dbSource);
-                result.addSource(dbSource, newData -> setValue(new Resource.Error<>(newData, t)));
+                result.addSource(dbSource, newData -> setValue(new Resource.Error<>(newData, t.getMessage())));
             }
         });
     }
 
     @MainThread
     private void saveResultAndReInit(RequestType response) {
-        new AsyncTask<Void, Void, Void>() {
-
+        appExecutors.diskIO().execute(new Runnable() {
             @Override
-            protected Void doInBackground(Void... voids) {
+            public void run() {
                 saveCallResult(response);
-                return null;
-            }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                result.addSource(loadFromDb(), newData -> setValue(new Resource.Success<>(newData)));
+                appExecutors.mainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        result.addSource(loadFromDb(), newData -> setValue(new Resource.Success<>(newData)));
+                    }
+                });
             }
-        }.execute();
+        });
     }
 
     private void setValue(Resource<ResultType> newValue) {
         if (result.getValue() != newValue) {
-            //Log.d(TAG, "setValue CacheObject");
-
             setValue(newValue);
         }
     }
