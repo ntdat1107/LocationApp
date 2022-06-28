@@ -17,6 +17,7 @@ public class LocationDetail implements Serializable {
     private String description;
     private double lat;
     private double lng;
+    private double timestamp;
 
     public LocationDetail(@NonNull String id, String code, String name, String description, double lat, double lng) {
         this.id = id;
@@ -99,5 +100,13 @@ public class LocationDetail implements Serializable {
                 "\"lat\": " + this.lat + ",\n" +
                 "\"lng\": " + this.lng + "\n" +
                 "}";
+    }
+
+    public double getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(double timestamp) {
+        this.timestamp = timestamp;
     }
 }

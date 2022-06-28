@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.locationapp.data.remote.LocationRepository;
+import com.example.locationapp.data.repository.LocationRepository;
 import com.example.locationapp.data.sources.model.preferlocation.Location;
 import com.example.locationapp.utils.Resource;
 import com.example.locationapp.utils.Status;
@@ -67,7 +67,11 @@ public class LocationListViewModel extends ViewModel {
             public void onChanged(Resource<List<Location>> listResource) {
                 if (listResource.getStatus() == Status.SUCCESS) {
                     getLoading().setValue(false);
-                    getLocationsLiveData().setValue(listResource.getData());
+                    if (listResource.getData() != null) {
+                        getLocationsLiveData().setValue(listResource.getData());
+                    } else {
+                        getError_message().setValue("No data");
+                    }
                 } else if (listResource.getStatus() == Status.ERROR) {
                     getLoading().setValue(false);
                     getError_message().setValue(listResource.getError());

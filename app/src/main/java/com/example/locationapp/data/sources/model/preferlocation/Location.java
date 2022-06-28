@@ -15,7 +15,7 @@ public class Location implements Serializable {
     private String code;
     private String name;
     private String image;
-
+    private double timestamp;
 
     public Location(@NonNull String id, String code, String name, String image) {
         this.id = id;
@@ -80,5 +80,13 @@ public class Location implements Serializable {
                 "\"name\": \"" + this.name + "\",\n" +
                 "\"image\": \"" + this.image + "\"\n" +
                 "}";
+    }
+
+    public double getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(double timestamp) {
+        this.timestamp = timestamp;
     }
 }

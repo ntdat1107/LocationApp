@@ -4,15 +4,16 @@ import android.app.Application;
 
 import androidx.room.Room;
 
-import com.example.locationapp.data.remote.LocationRepository;
+import com.example.locationapp.data.repository.LocationRepository;
 import com.example.locationapp.data.sources.local.location.LocationDatabase;
 import com.example.locationapp.data.sources.local.preferlocations.PreferLocationsDatabase;
 import com.example.locationapp.data.sources.remote.RemoteRepository;
 import com.example.locationapp.data.sources.remote.RemoteRepositoryImpl;
-import com.example.locationapp.data.remote.LocationRepositoryImpl;
+import com.example.locationapp.data.repository.LocationRepositoryImpl;
 import com.example.locationapp.data.sources.local.LocalRepository;
 import com.example.locationapp.data.sources.local.LocalRepositoryImpl;
 import com.example.locationapp.data.sources.remote.LocationAPI;
+import com.example.locationapp.utils.AppExecutors;
 
 import javax.inject.Singleton;
 
@@ -67,7 +68,13 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public LocationRepository provideTestRepository(RemoteRepository remoteRepository, LocalRepository localRepository) {
-        return new LocationRepositoryImpl(remoteRepository, localRepository);
+    public AppExecutors provideAppExecutors() {
+        return AppExecutors.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    public LocationRepository provideTestRepository(RemoteRepository remoteRepository, LocalRepository localRepository, AppExecutors appExecutors) {
+        return new LocationRepositoryImpl(remoteRepository, localRepository, appExecutors);
     }
 }

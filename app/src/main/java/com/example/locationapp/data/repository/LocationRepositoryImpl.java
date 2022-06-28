@@ -1,4 +1,4 @@
-package com.example.locationapp.data.remote;
+package com.example.locationapp.data.repository;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,29 +21,36 @@ import javax.inject.Inject;
 import retrofit2.Call;
 
 public class LocationRepositoryImpl implements LocationRepository {
+    private final double timeToLiveInMillis = 5 * 60 * 1000;
     private final RemoteRepository remoteRepository;
     private final LocalRepository localRepository;
+    private final AppExecutors appExecutors;
 
     @Inject
-    public LocationRepositoryImpl(RemoteRepository remoteRepository, LocalRepository localRepository) {
+    public LocationRepositoryImpl(RemoteRepository remoteRepository, LocalRepository localRepository, AppExecutors appExecutors) {
         this.remoteRepository = remoteRepository;
         this.localRepository = localRepository;
+        this.appExecutors = appExecutors;
     }
 
     @Override
     public LiveData<Resource<List<Location>>> getPreferLocations() {
-        return new NetworkBoundResource<List<Location>, Root>(AppExecutors.getInstance()) {
+        return new NetworkBoundResource<List<Location>, Root>(appExecutors) {
 
             @Override
             protected void saveCallResult(@NonNull Root item) {
-                for (Location location: item.getData().getLocations()) {
+                for (Location location : item.getData().getLocations()) {
+                    location.setTimestamp(System.currentTimeMillis());
                     localRepository.insertLocation(location);
                 }
             }
 
             @Override
             protected boolean shouldFetch(@Nullable List<Location> data) {
-                return false;
+                if (data == null || data.size() == 0) {
+                    return true;
+                }
+                return System.currentTimeMillis() - data.get(0).getTimestamp() >= timeToLiveInMillis;
             }
 
             @NonNull
@@ -62,17 +69,19 @@ public class LocationRepositoryImpl implements LocationRepository {
 
     @Override
     public LiveData<Resource<LocationDetail>> getDetailLocation(String locationID) {
-        return new NetworkBoundResource<LocationDetail, RootDetail>(AppExecutors.getInstance()) {
+        return new NetworkBoundResource<LocationDetail, RootDetail>(appExecutors) {
             @Override
             protected void saveCallResult(@NonNull RootDetail item) {
                 LocationDetail locationDetail = item.getData().getLocation();
                 locationDetail.setId(locationID);
+                locationDetail.setTimestamp(System.currentTimeMillis());
                 localRepository.insertDetailLocation(locationDetail);
             }
 
             @Override
             protected boolean shouldFetch(@Nullable LocationDetail data) {
-                return false;
+                if (data == null) return true;
+                return System.currentTimeMillis() - data.getTimestamp() >= timeToLiveInMillis;
             }
 
             @NonNull

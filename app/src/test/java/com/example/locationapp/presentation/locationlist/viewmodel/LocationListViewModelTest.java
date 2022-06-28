@@ -3,8 +3,8 @@ package com.example.locationapp.presentation.locationlist.viewmodel;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.locationapp.data.remote.LocationRepository;
-import com.example.locationapp.data.remote.LocationRepositoryImpl;
+import com.example.locationapp.data.repository.LocationRepository;
+import com.example.locationapp.data.repository.LocationRepositoryImpl;
 import com.example.locationapp.data.sources.model.preferlocation.Location;
 import com.example.locationapp.utils.Resource;
 

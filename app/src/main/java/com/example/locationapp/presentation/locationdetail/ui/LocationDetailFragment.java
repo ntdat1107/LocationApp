@@ -80,7 +80,17 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
 
         locationViewModel.getLoading().observe(getViewLifecycleOwner(), this::observeLoading);
 
-        locationViewModel.getError_message().observe(requireActivity(), this::observeErrorMessage);
+        locationViewModel.getError_message().observe(getViewLifecycleOwner(), this::observeErrorMessage);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        locationViewModel.getLocationDetailMutableLiveData().removeObserver(this::observeLocationDetail);
+
+        locationViewModel.getLoading().removeObserver(this::observeLoading);
+
+        locationViewModel.getError_message().removeObserver(this::observeErrorMessage);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.locationapp.data.remote;
+package com.example.locationapp.data.repository;
 
 import androidx.lifecycle.LiveData;
 
