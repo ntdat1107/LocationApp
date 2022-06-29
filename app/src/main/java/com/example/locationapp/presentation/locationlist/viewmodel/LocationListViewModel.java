@@ -1,34 +1,38 @@
 package com.example.locationapp.presentation.locationlist.viewmodel;
 
-import android.app.Application;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.locationapp.MyApplication;
-import com.example.locationapp.data.sources.remote.model.Data;
-import com.example.locationapp.data.sources.remote.model.Location;
-import com.example.locationapp.data.sources.remote.model.Root;
-import com.example.locationapp.domain.interactor.GetPreferLocationsUseCase;
+import com.example.locationapp.data.repository.LocationRepository;
+import com.example.locationapp.data.sources.model.preferlocation.Location;
+import com.example.locationapp.utils.Resource;
+import com.example.locationapp.utils.Status;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class LocationListViewModel extends ViewModel {
-    @Inject
-    GetPreferLocationsUseCase getPreferLocationsUseCase;
+    public final LocationRepository locationRepository;
 
-    private MutableLiveData<Data> locationsLiveData;
+    private MutableLiveData<List<Location>> locationsLiveData;
 
     private MutableLiveData<Boolean> loading;
 
-    private MutableLiveData<String> error_msg;
+    private MutableLiveData<String> error_message;
+
+    LiveData<Resource<List<Location>>> liveData;
+
+
+    @Inject
+    public LocationListViewModel(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
 
     public MutableLiveData<Boolean> getLoading() {
         if (loading == null) {
@@ -37,59 +41,42 @@ public class LocationListViewModel extends ViewModel {
         return loading;
     }
 
-    public MutableLiveData<String> getError_msg() {
-        if (error_msg == null) {
-            error_msg = new MutableLiveData<>();
+    public MutableLiveData<String> getError_message() {
+        if (error_message == null) {
+            error_message = new MutableLiveData<>();
         }
-        return error_msg;
+        return error_message;
     }
 
-
-    public MutableLiveData<Data> getLocationsLiveData() {
+    public MutableLiveData<List<Location>> getLocationsLiveData() {
         if (locationsLiveData == null) {
-            locationsLiveData = new MutableLiveData<>();
+            locationsLiveData = new MutableLiveData<List<Location>>();
         }
         return locationsLiveData;
-
     }
 
     public void fetchDataAPI() {
         getLoading().postValue(true);
-        Call<Root> call = getPreferLocationsUseCase.execute();
-        call.enqueue(new Callback<Root>() {
-            @Override
-            public void onResponse(@NonNull Call<Root> call, @NonNull Response<Root> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() == null) {
-                        getError_msg().setValue("Empty data");
-                    } else if (response.body().getError_code() != 0) {
-                        getError_msg().setValue(response.body().getError_message());
-                    } else {
-                        getLocationsLiveData().setValue(response.body().getData());
-                    }
-                } else {
-                    getError_msg().setValue(response.message());
-                }
-                loading.setValue(false);
-            }
+        getError_message().postValue(null);
+        getLocationsLiveData().postValue(null);
 
+        liveData = locationRepository.getPreferLocations();
+
+        liveData.observeForever(new Observer<Resource<List<Location>>>() {
             @Override
-            public void onFailure(@NonNull Call<Root> call, @NonNull Throwable t) {
-                loading.setValue(false);
-                getError_msg().setValue(t.getMessage());
+            public void onChanged(Resource<List<Location>> listResource) {
+                if (listResource.getStatus() == Status.SUCCESS) {
+                    getLoading().setValue(false);
+                    if (listResource.getData() != null) {
+                        getLocationsLiveData().setValue(listResource.getData());
+                    } else {
+                        getError_message().setValue("No data");
+                    }
+                } else if (listResource.getStatus() == Status.ERROR) {
+                    getLoading().setValue(false);
+                    getError_message().setValue(listResource.getError());
+                }
             }
         });
-    }
-
-    public void expandedItemView(int pos) {
-        Data data = locationsLiveData.getValue();
-        if (data == null) {
-            return;
-        }
-        for (Location i : data.getLocations()) {
-            i.setExpanded(null);
-        }
-        data.getLocations().get(pos).setExpanded(true);
-        locationsLiveData.setValue(data);
     }
 }

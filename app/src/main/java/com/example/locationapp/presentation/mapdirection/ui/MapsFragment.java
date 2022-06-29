@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.locationapp.R;
+import com.example.locationapp.data.sources.model.detaillocation.LocationDetail;
 import com.example.locationapp.databinding.FragmentMapsBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,6 +26,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     private FragmentMapsBinding binding;
     private GoogleMap mMap;
     private MarkerOptions des;
+    private LocationDetail locationDetail;
 
     @Nullable
     @Override
@@ -47,9 +49,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         assert getArguments() != null;
-        double lat = getArguments().getDouble("Lat");
-        double lng = getArguments().getDouble("Lng");
-        des = new MarkerOptions().position(new LatLng(lat, lng)).title("Destination");
+        locationDetail = MapsFragmentArgs.fromBundle(getArguments()).getLocationDetail();
+        assert locationDetail != null;
+        des = new MarkerOptions().position(new LatLng(locationDetail.getLat(), locationDetail.getLng())).title("Destination");
 
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
@@ -58,23 +60,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-//        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//            @Override
-//            public void onMapClick(@NonNull LatLng latLng) {
-//                MarkerOptions markerOptions = new MarkerOptions();
-//
-//                markerOptions.position(latLng);
-//                markerOptions.title(latLng.latitude + " : " +latLng.longitude);
-//
-//                googleMap.clear();
-//
-//                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-//
-//                googleMap.addMarker(markerOptions);
-//            }
-//        });
         mMap.addMarker(des);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(des.getPosition(), 8F));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(des.getPosition(), 16F));
     }
 
     @Override

@@ -1,83 +1,75 @@
 package com.example.locationapp.presentation.locationdetail.viewmodel;
 
-import android.app.Application;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.example.locationapp.MyApplication;
-import com.example.locationapp.data.sources.remote.model.LocationDetail;
-import com.example.locationapp.data.sources.remote.model.Root;
-import com.example.locationapp.data.sources.remote.model.RootDetail;
-import com.example.locationapp.domain.repository.LocationRepository;
+import com.example.locationapp.data.repository.LocationRepository;
+import com.example.locationapp.data.sources.model.detaillocation.LocationDetail;
+import com.example.locationapp.utils.Resource;
+import com.example.locationapp.utils.Status;
 
 import javax.inject.Inject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import dagger.hilt.android.lifecycle.HiltViewModel;
 
+@HiltViewModel
 public class LocationViewModel extends ViewModel {
-    @Inject
-    LocationRepository locationRepository;
-
-    private MutableLiveData<RootDetail> locationDetailMutableLiveData;
+    public final LocationRepository locationRepository;
+    private MutableLiveData<LocationDetail> locationDetailMutableLiveData;
     private MutableLiveData<Boolean> loading;
     private MutableLiveData<String> error_message;
+    private LiveData<Resource<LocationDetail>> liveData;
+
+    @Inject
+    public LocationViewModel(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
+
 
     public MutableLiveData<Boolean> getLoading() {
         if (loading == null) {
-            loading = new MutableLiveData<Boolean>();
+            loading = new MutableLiveData<>();
         }
         return loading;
     }
 
     public MutableLiveData<String> getError_message() {
         if (error_message == null) {
-            error_message = new MutableLiveData<String>();
+            error_message = new MutableLiveData<>();
         }
         return error_message;
     }
 
-    public MutableLiveData<RootDetail> getLocationDetailMutableLiveData() {
+    public MutableLiveData<LocationDetail> getLocationDetailMutableLiveData() {
         if (locationDetailMutableLiveData == null) {
-            locationDetailMutableLiveData = new MutableLiveData<RootDetail>();
+            locationDetailMutableLiveData = new MutableLiveData<>();
         }
         return locationDetailMutableLiveData;
     }
-
 
     public void fetchLocationData(String locationID) {
         getLoading().postValue(true);
         getError_message().postValue(null);
         getLocationDetailMutableLiveData().postValue(null);
-        Call<RootDetail> call = locationRepository.getLocationDetail(locationID);
 
-        call.enqueue(new Callback<RootDetail>() {
+        liveData = locationRepository.getDetailLocation(locationID);
+
+        liveData.observeForever(new Observer<Resource<LocationDetail>>() {
             @Override
-            public void onResponse(@NonNull Call<RootDetail> call, @NonNull Response<RootDetail> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() == null) {
-                        getError_message().setValue("Empty data");
-                    } else if (response.body().getError_code() != 0) {
-                        getError_message().setValue(response.body().getError_message());
+            public void onChanged(Resource<LocationDetail> locationDetailResource) {
+                if (locationDetailResource.getStatus() == Status.SUCCESS) {
+                    getLoading().setValue(false);
+                    if (locationDetailResource.getData() != null) {
+                        getLocationDetailMutableLiveData().setValue(locationDetailResource.getData());
                     } else {
-                        getLocationDetailMutableLiveData().setValue(response.body());
-                        getError_message().setValue(null);
+                        getError_message().setValue("No data");
                     }
-                } else {
-                    getError_message().setValue(response.message());
+                } else if (locationDetailResource.getStatus() == Status.ERROR) {
+                    getLoading().setValue(false);
+                    getError_message().setValue(locationDetailResource.getError());
                 }
-                loading.setValue(false);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<RootDetail> call, @NonNull Throwable t) {
-                getError_message().setValue(t.getMessage());
-                loading.setValue(false);
             }
         });
     }
