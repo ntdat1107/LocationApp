@@ -2,6 +2,7 @@ package com.example.locationapp.presentation.locationlist.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,9 @@ public class LocationListFragment extends Fragment implements LocationListAdapte
 
         swipeRefreshLayout = binding.swipeRefreshLayout;
         locationListViewModel = new ViewModelProvider(this).get(LocationListViewModel.class);
+        Log.i("test", locationListViewModel.toString());
+        Log.i("test", locationListViewModel.locationRepository.toString());
+
         return binding.getRoot();
     }
 

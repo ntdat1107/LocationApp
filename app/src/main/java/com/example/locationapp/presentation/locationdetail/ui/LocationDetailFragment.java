@@ -2,6 +2,7 @@ package com.example.locationapp.presentation.locationdetail.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,9 @@ public class LocationDetailFragment extends Fragment implements SwipeRefreshLayo
 
         setUpBackground();
         locationViewModel = new ViewModelProvider(this).get(LocationViewModel.class);
+
+        Log.i("test", locationViewModel.toString());
+        Log.i("test", locationViewModel.locationRepository.toString());
 
         return binding.getRoot();
     }

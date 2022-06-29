@@ -42,39 +42,4 @@ public class AppModule {
         return retrofit.create(LocationAPI.class);
     }
 
-    @Provides
-    @Singleton
-    public RemoteRepository provideLocationRepository(LocationAPI locationAPI) {
-        return new RemoteRepositoryImpl(locationAPI);
-    }
-
-    @Provides
-    @Singleton
-    public PreferLocationsDatabase providePreferDatabase(Application application) {
-        return Room.databaseBuilder(application, PreferLocationsDatabase.class, "prefer_locations_database").build();
-    }
-
-    @Provides
-    @Singleton
-    public LocationDatabase provideLocationDatabase(Application application) {
-        return Room.databaseBuilder(application, LocationDatabase.class, "location_database").build();
-    }
-
-    @Provides
-    @Singleton
-    public LocalRepository provideLocalRepository(PreferLocationsDatabase preferLocationsDatabase, LocationDatabase locationDatabase) {
-        return new LocalRepositoryImpl(preferLocationsDatabase, locationDatabase);
-    }
-
-    @Provides
-    @Singleton
-    public AppExecutors provideAppExecutors() {
-        return AppExecutors.getInstance();
-    }
-
-    @Provides
-    @Singleton
-    public LocationRepository provideTestRepository(RemoteRepository remoteRepository, LocalRepository localRepository, AppExecutors appExecutors) {
-        return new LocationRepositoryImpl(remoteRepository, localRepository, appExecutors);
-    }
 }
