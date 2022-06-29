@@ -5,6 +5,7 @@ import androidx.arch.core.executor.ArchTaskExecutor;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.locationapp.data.sources.local.LocalRepository;
 import com.example.locationapp.data.sources.local.LocalRepositoryImpl;
@@ -73,6 +74,8 @@ public class LocationRepositoryImplTest {
         locationDetail.setTimestamp(System.currentTimeMillis() - 1111200);
         Mockito.when(localRepository.getDetailLocationFromDB("success")).thenReturn(new MutableLiveData<>(locationDetail));
 
+        System.out.println(System.currentTimeMillis() - locationDetail.getTimestamp() > 5 * 60 * 1000);
+
         RootDetail rootDetail = new RootDetail(0,
                 "",
                 new DataDetail(new LocationDetail("success", "bku", "GEM Center", "GEM Center.", 10, 106)));
@@ -97,7 +100,6 @@ public class LocationRepositoryImplTest {
         LiveData<Resource<LocationDetail>> result = locationRepository.getDetailLocation("success");
 
         result.observeForever(locationDetailResource -> {
-
         });
 
         Assert.assertEquals(result.getValue().getData(), locationDetail);

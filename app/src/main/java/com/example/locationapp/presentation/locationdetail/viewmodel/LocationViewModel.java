@@ -23,6 +23,11 @@ public class LocationViewModel extends ViewModel {
     private MutableLiveData<String> error_message;
     private LiveData<Resource<LocationDetail>> liveData;
 
+    @Inject
+    public LocationViewModel(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
+
 
     public MutableLiveData<Boolean> getLoading() {
         if (loading == null) {
@@ -43,11 +48,6 @@ public class LocationViewModel extends ViewModel {
             locationDetailMutableLiveData = new MutableLiveData<>();
         }
         return locationDetailMutableLiveData;
-    }
-
-    @Inject
-    public LocationViewModel(LocationRepository locationRepository) {
-        this.locationRepository = locationRepository;
     }
 
     public void fetchLocationData(String locationID) {

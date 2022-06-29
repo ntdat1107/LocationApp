@@ -28,6 +28,12 @@ public class LocationListViewModel extends ViewModel {
 
     LiveData<Resource<List<Location>>> liveData;
 
+
+    @Inject
+    public LocationListViewModel(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
+
     public MutableLiveData<Boolean> getLoading() {
         if (loading == null) {
             loading = new MutableLiveData<>();
@@ -42,17 +48,11 @@ public class LocationListViewModel extends ViewModel {
         return error_message;
     }
 
-    @Inject
-    public LocationListViewModel(LocationRepository locationRepository) {
-        this.locationRepository = locationRepository;
-    }
-
     public MutableLiveData<List<Location>> getLocationsLiveData() {
         if (locationsLiveData == null) {
             locationsLiveData = new MutableLiveData<List<Location>>();
         }
         return locationsLiveData;
-
     }
 
     public void fetchDataAPI() {

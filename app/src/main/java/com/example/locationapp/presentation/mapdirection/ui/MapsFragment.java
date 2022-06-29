@@ -60,21 +60,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-//        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//            @Override
-//            public void onMapClick(@NonNull LatLng latLng) {
-//                MarkerOptions markerOptions = new MarkerOptions();
-//
-//                markerOptions.position(latLng);
-//                markerOptions.title(latLng.latitude + " : " +latLng.longitude);
-//
-//                googleMap.clear();
-//
-//                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-//
-//                googleMap.addMarker(markerOptions);
-//            }
-//        });
         mMap.addMarker(des);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(des.getPosition(), 16F));
     }
