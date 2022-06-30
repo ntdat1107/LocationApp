@@ -26,7 +26,7 @@ public class LocationListViewModel extends ViewModel {
 
     private MutableLiveData<String> error_message;
 
-    LiveData<Resource<List<Location>>> liveData;
+    LiveData<Resource<List<Location>>> liveDataListLocation;
 
 
     @Inject
@@ -60,9 +60,9 @@ public class LocationListViewModel extends ViewModel {
         getError_message().postValue(null);
         getLocationsLiveData().postValue(null);
 
-        liveData = locationRepository.getPreferLocations();
+        liveDataListLocation = locationRepository.getPreferLocations();
 
-        liveData.observeForever(new Observer<Resource<List<Location>>>() {
+        liveDataListLocation.observeForever(new Observer<Resource<List<Location>>>() {
             @Override
             public void onChanged(Resource<List<Location>> listResource) {
                 if (listResource.getStatus() == Status.SUCCESS) {

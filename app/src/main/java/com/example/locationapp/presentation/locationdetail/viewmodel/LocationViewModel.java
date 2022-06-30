@@ -20,7 +20,7 @@ public class LocationViewModel extends ViewModel {
     private MutableLiveData<LocationDetail> locationDetailMutableLiveData;
     private MutableLiveData<Boolean> loading;
     private MutableLiveData<String> error_message;
-    private LiveData<Resource<LocationDetail>> liveData;
+    private LiveData<Resource<LocationDetail>> liveDataLocationDetail;
 
     @Inject
     public LocationViewModel(LocationRepository locationRepository) {
@@ -54,9 +54,9 @@ public class LocationViewModel extends ViewModel {
         getError_message().postValue(null);
         getLocationDetailMutableLiveData().postValue(null);
 
-        liveData = locationRepository.getDetailLocation(locationID);
+        liveDataLocationDetail = locationRepository.getDetailLocation(locationID);
 
-        liveData.observeForever(new Observer<Resource<LocationDetail>>() {
+        liveDataLocationDetail.observeForever(new Observer<Resource<LocationDetail>>() {
             @Override
             public void onChanged(Resource<LocationDetail> locationDetailResource) {
                 if (locationDetailResource.getStatus() == Status.SUCCESS) {
