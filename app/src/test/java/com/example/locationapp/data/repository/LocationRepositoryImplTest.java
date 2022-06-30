@@ -70,7 +70,7 @@ public class LocationRepositoryImplTest {
     @Test
     public void testFetchFromLocal() throws IOException {
         LocationDetail locationDetail = new LocationDetail("success", "gem", "GEM Center", "GEM Center.", 10, 106);
-        locationDetail.setTimestamp(System.currentTimeMillis() - 1111200);
+        locationDetail.setTimestamp(System.currentTimeMillis() - 1000);
         Mockito.when(localRepository.getDetailLocationFromDB("success")).thenReturn(new MutableLiveData<>(locationDetail));
 
         System.out.println(System.currentTimeMillis() - locationDetail.getTimestamp() > 5 * 60 * 1000);
